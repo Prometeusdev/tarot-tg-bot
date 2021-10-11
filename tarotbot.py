@@ -7,11 +7,6 @@ from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
 load_dotenv()
 
 PORT = int(os.environ.get('PORT', 80))
@@ -26,6 +21,7 @@ logging.basicConfig(
 def get_deck(update, context):
     text = update.effective_message.text
     chat = update.effective_chat
+    name = update.message.chat.first_name
     try:
         deck = text
     except Exception as error:
@@ -35,7 +31,7 @@ def get_deck(update, context):
                                  resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
-        text=text,
+        text='{}, Ваша карта дня'.format(name),
         reply_markup=button
         )
     context.bot.send_photo(chat.id, get_new_image(deck))
@@ -58,10 +54,10 @@ def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
     try:
-        random_card = open(f'static/images/{deck}/{random_number}.JPG', 'rb')
+        random_card = open(f'/app/tarotbot.py/static/images/{deck}/{random_number}.JPG', 'rb')
     except Exception as error:
         logging.error(f'Ошибка в расположении картинки: {error}')
-        random_card = open('static/images/Таро Уэйта/back.JPG', 'rb')
+        random_card = open('/app/tarotbot.py/static/images/Таро Уэйта/back.JPG', 'rb')
     return random_card
 
 
