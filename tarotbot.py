@@ -14,6 +14,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 load_dotenv()
 
+PORT = int(os.environ.get('PORT', 80))
 secret_token = os.getenv('TOKEN')
 
 
@@ -26,10 +27,10 @@ def get_deck(update, context):
     text = update.effective_message.text
     chat = update.effective_chat
     try:
-        deck = text[1:]
+        deck = text
     except Exception as error:
         logging.error(f'Такой колоды не существует: {error}')
-        deck = 'Basic_Waite_Tarot'
+        deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
     context.bot.send_message(
@@ -44,12 +45,12 @@ def get_deck(update, context):
 def deck_selection(update, context):
     chat = update.effective_chat
     button = ReplyKeyboardMarkup([
-        ['/Basic_Waite_Tarot', '/Animals_Divine_Tarot']
+        ['Таро Уэйта', 'Таро Божественных Животных']
         ],
         resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
-        text='Выберите колоду',
+        text='Выберите колоду карт',
         reply_markup=button)
 
 
@@ -60,7 +61,7 @@ def get_new_image(deck):
         random_card = open(f'static/images/{deck}/{random_number}.JPG', 'rb')
     except Exception as error:
         logging.error(f'Ошибка в расположении картинки: {error}')
-        random_card = open('static/images/Basic_Waite_Tarot/back.JPG', 'rb')
+        random_card = open('static/images/Таро Уэйта/back.JPG', 'rb')
     return random_card
 
 
@@ -82,10 +83,15 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
     updater.dispatcher.add_handler(CommandHandler('decks', deck_selection))
     updater.dispatcher.add_handler(MessageHandler(
-        Filters.regex('/Basic_Waite_Tarot') |
-        Filters.regex('/Animals_Divine_Tarot'), get_deck))
+        Filters.regex('Таро Уэйта') |
+        Filters.regex('Таро Божественных Животных'), get_deck))
 
-    updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=secret_token,
+                          webhook_url=('https://hellocowboybot.herokuapp.com/'
+                                       + secret_token))
+    #updater.start_polling()
     updater.idle()
 
 
