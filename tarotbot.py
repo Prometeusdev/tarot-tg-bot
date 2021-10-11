@@ -89,7 +89,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=secret_token,
-                          webhook_url=('https://hellocowboybot.herokuapp.com/'
+                          webhook_url=('https://tarot-helen-bot.herokuapp.com/'
                                        + secret_token))
     #updater.start_polling()
     updater.idle()
