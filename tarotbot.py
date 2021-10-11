@@ -54,10 +54,11 @@ def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
     try:
-        random_card = open(f'/app/tarotbot.py/static/images/{deck}/{random_number}.JPG', 'rb')
+        random_card = open(f'/app/static/images/{deck}/{random_number}.JPG',
+                           'rb')
     except Exception as error:
         logging.error(f'Ошибка в расположении картинки: {error}')
-        random_card = open('/app/tarotbot.py/static/images/Таро Уэйта/back.JPG', 'rb')
+        random_card = open('/app/static/images/Таро Уэйта/back.JPG', 'rb')
     return random_card
 
 
