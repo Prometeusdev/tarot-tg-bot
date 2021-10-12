@@ -1,7 +1,6 @@
 import os
 import logging
 import random
-import re
 
 from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup
@@ -83,25 +82,25 @@ def another_words(update, context):
     name = update.message.chat.first_name
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
-    list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту',
-                  '']
+    list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту']
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло']
-    list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь']
+    list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
+                'как жизнь']
     if text in list_card:
         deck_selection(update, context)
-    elif [word for word in list_hi if word[0] in text]:
+    elif [word for word in list_hi if word in text]:
         context.bot.send_message(
             chat_id=chat.id,
             text='{}, привет, может погадаем?'.format(name),
             reply_markup=button
             )
-    elif [word for word in list_how if word[0] in text]:
+    elif [word for word in list_how if word in text]:
         list_answer = ['У меня все прекрасно', 'Сейчас бы погадать 🔮',
                        'Хорошо', 'Радуюсь жизни 😍',
                        'Готов много работать 🤓', '👍']
         context.bot.send_message(
             chat_id=chat.id,
-            text=list_answer[random.randint(0,len(list_answer))],
+            text=list_answer[random.randint(0, len(list_answer))],
             reply_markup=button
             )
     elif 'таролог' in text:
@@ -120,10 +119,9 @@ def another_words(update, context):
             )
 
 
-
 def main():
     updater = Updater(token=secret_token)
-    
+
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
     updater.dispatcher.add_handler(CommandHandler('decks', deck_selection))
     updater.dispatcher.add_handler(MessageHandler(
