@@ -83,15 +83,25 @@ def another_words(update, context):
     name = update.message.chat.first_name
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
-    list_words = ['выбрать колоду', 'колода', 'карта дня', 'дай карту',
+    list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту',
                   '']
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло']
-    if text in list_words:
+    list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь']
+    if text in list_card:
         deck_selection(update, context)
-    elif text in list_hi:
+    elif [word for word in list_hi if word[0] in text]:
         context.bot.send_message(
             chat_id=chat.id,
             text='{}, привет, может погадаем?'.format(name),
+            reply_markup=button
+            )
+    elif [word for word in list_how if word[0] in text]:
+        list_answer = ['У меня все прекрасно', 'Сейчас бы погадать 🔮',
+                       'Хорошо', 'Радуюсь жизни 😍',
+                       'Готов много работать 🤓', '👍']
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=list_answer[random.randint(0,len(list_answer))],
             reply_markup=button
             )
     elif 'таролог' in text:
