@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+import re
 
 from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup
@@ -10,6 +11,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 load_dotenv()
 
 PORT = int(os.environ.get('PORT', 80))
+
 secret_token = os.getenv('TOKEN')
 
 
@@ -75,20 +77,56 @@ def get_start(update, context):
         )
 
 
+def another_words(update, context):
+    text = update.effective_message.text.lower()
+    chat = update.effective_chat
+    name = update.message.chat.first_name
+    button = ReplyKeyboardMarkup([['/decks']],
+                                 resize_keyboard=True)
+    list_words = ['выбрать колоду', 'колода', 'карта дня', 'дай карту',
+                  '']
+    list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло']
+    if text in list_words:
+        deck_selection(update, context)
+    elif text in list_hi:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text='{}, привет, может погадаем?'.format(name),
+            reply_markup=button
+            )
+    elif 'таролог' in text:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text='Елена Логинова, https://www.instagram.com/hellyloginson/ \n'
+                 'ТАРО ✳️ Предсказания, полезные советы.'
+                 'Отвечу на ваши вопросы',
+            reply_markup=button
+            )
+    else:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text='{}, я Вас не понимаю, используйте меню команд'.format(name),
+            reply_markup=button
+            )
+
+
+
 def main():
     updater = Updater(token=secret_token)
+    
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
     updater.dispatcher.add_handler(CommandHandler('decks', deck_selection))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=secret_token,
                           webhook_url=('https://tarot-helen-bot.herokuapp.com/'
                                        + secret_token))
-    #updater.start_polling()
+    # updater.start_polling()
     updater.idle()
 
 
