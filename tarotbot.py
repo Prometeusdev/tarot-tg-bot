@@ -83,16 +83,35 @@ def another_words(update, context):
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту']
-    list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло']
+    list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
                 'как жизнь']
     if text in list_card:
         deck_selection(update, context)
     elif [word for word in list_hi if word in text]:
+        list_hi_answer = [
+            '{}, привет, может погадаем?'.format(name),
+            'Здравствуйте, {}!'.format(name),
+            'Hello 👋',
+            ]
+        list_hi_sticker = [
+            ('CAACAgIAAxkBAAIOo2FnFc3Eh9gzBko5fi-edLxZAAHqyAACVAADQbVWDGq3-McI'
+             'jQH6IQQ'),
+            ('CAACAgIAAxkBAAIOpWFnFmMMAp8nzN3Gv1rurTWmYeLuAAIRAwAC8-O-CxlunyW'
+             'ezCwkIQQ'),
+            ('CAACAgIAAxkBAAIOp2FnF4qCXJqteKd7YOAtiSyVyFZ4AAKSAQACVp29Cp_QLQ'
+             'hCLtUFIQQ'),
+            ('CAACAgIAAxkBAAIOqWFnGBi90XgL4WneLHIN2i7PF2KgAAI1AQACMNSdEbS4Nf1m'
+             'oLZ8IQQ'),
+        ]
         context.bot.send_message(
             chat_id=chat.id,
-            text='{}, привет, может погадаем?'.format(name),
+            text=list_hi_answer[random.randint(0, len(list_hi_answer)-1)],
             reply_markup=button
+            )
+        context.bot.send_sticker(
+            chat.id,
+            list_hi_sticker[random.randint(0, len(list_hi_sticker)-1)]
             )
     elif [word for word in list_how if word in text]:
         list_answer = ['У меня все прекрасно', 'Сейчас бы погадать 🔮',
@@ -100,7 +119,7 @@ def another_words(update, context):
                        'Готов много работать 🤓', '👍']
         context.bot.send_message(
             chat_id=chat.id,
-            text=list_answer[random.randint(0, len(list_answer))],
+            text=list_answer[random.randint(0, len(list_answer)-1)],
             reply_markup=button
             )
     elif 'таролог' in text:
