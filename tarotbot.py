@@ -23,7 +23,7 @@ logging.basicConfig(
 def get_yes_or_no(update, context):
     chat = update.effective_chat
     deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     try:
         answer = yes_no_dict[get_new_image(deck)[0]]
@@ -48,7 +48,7 @@ def get_deck(update, context):
     except Exception as error:
         logging.error(f'Такой колоды не существует: {error}')
         deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     context.bot.send_photo(
         chat.id,
@@ -92,7 +92,7 @@ def get_new_image(deck):
 def get_start(update, context):
     chat = update.effective_chat
     name = update.message.chat.first_name
-    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
@@ -106,9 +106,9 @@ def another_words(update, context):
     text = update.effective_message.text.lower()
     chat = update.effective_chat
     name = update.message.chat.first_name
-    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту']
+    list_card = ['выбрать колоду', 'колода', 'дай карту']
     list_yes_no = ['вопрос', 'да', 'нет',]
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
@@ -175,7 +175,11 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
     updater.dispatcher.add_handler(CommandHandler('card_of_the_day',
                                                   deck_selection))
+    updater.dispatcher.add_handler(MessageHandler(Filters.regex('Карта дня'),
+                                                  deck_selection))
     updater.dispatcher.add_handler(CommandHandler('yes_or_no',
+                                                  get_question))
+    updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
