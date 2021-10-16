@@ -19,21 +19,16 @@ logging.basicConfig(
 
 
 def get_yes_or_no(update, context):
-    text = update.effective_message.text
     chat = update.effective_chat
-    try:
-        deck = text
-    except Exception as error:
-        logging.error(f'Такой колоды не существует: {error}')
-        deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['/decks']],
+    deck = 'Таро Уэйта'
+    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
     answer = get_new_image(deck)[0]
     try:
         file = open(f'/app/data/yes_or_no.txt', 'rb')
         answer = file[get_new_image(deck)[0]]
     except Exception as error:
-        logging.error(f'Ошибка в расположении картинки: {error}')
+        logging.error(f'Ошибка в расположении файла: {error}')
         answer = 'Ответа пока нет'
     context.bot.send_photo(
         chat.id,
@@ -52,7 +47,7 @@ def get_deck(update, context):
     except Exception as error:
         logging.error(f'Такой колоды не существует: {error}')
         deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['/decks']],
+    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
     context.bot.send_photo(
         chat.id,
@@ -60,6 +55,13 @@ def get_deck(update, context):
         caption='{}, Ваша карта дня'.format(name),
         reply_markup=button)
     return deck
+
+
+def get_question(update, context):
+    chat = update.effective_chat
+    context.bot.send_message(
+        chat_id=chat.id,
+        text='Задайте вопрос со знаком вопроса в конце предложения')
 
 
 def deck_selection(update, context):
@@ -89,7 +91,7 @@ def get_new_image(deck):
 def get_start(update, context):
     chat = update.effective_chat
     name = update.message.chat.first_name
-    button = ReplyKeyboardMarkup([['/decks']],
+    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
@@ -103,7 +105,7 @@ def another_words(update, context):
     text = update.effective_message.text.lower()
     chat = update.effective_chat
     name = update.message.chat.first_name
-    button = ReplyKeyboardMarkup([['/decks']],
+    button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту']
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
@@ -111,6 +113,8 @@ def another_words(update, context):
                 'как жизнь']
     if text in list_card:
         deck_selection(update, context)
+    elif text[-1] == '?' :
+        get_yes_or_no(update, context)
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
             '{}, привет, может погадаем?'.format(name),
@@ -165,9 +169,10 @@ def main():
     updater = Updater(token=secret_token)
 
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
-    updater.dispatcher.add_handler(CommandHandler('decks', deck_selection))
-    updater.dispatcher.add_handler(CommandHandler('yes_or_no',
+    updater.dispatcher.add_handler(CommandHandler('card_of_the_day',
                                                   deck_selection))
+    updater.dispatcher.add_handler(CommandHandler('yes_or_no',
+                                                  get_question))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
