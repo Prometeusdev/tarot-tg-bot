@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
+from data.yes_or_no import yes_no_dict
+
 
 load_dotenv()
 
@@ -23,10 +25,9 @@ def get_yes_or_no(update, context):
     deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
-    answer = get_new_image(deck)[0]
     try:
-        file = open(f'/app/data/yes_or_no.txt', 'rb')
-        answer = file[get_new_image(deck)[0]]
+        answer = yes_no_dict[get_new_image(deck)[0]]
+        print(answer)
     except Exception as error:
         logging.error(f'Ошибка в расположении файла: {error}')
         answer = 'Ответа пока нет'
