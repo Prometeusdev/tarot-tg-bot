@@ -109,12 +109,15 @@ def another_words(update, context):
     button = ReplyKeyboardMarkup([['/card_of_the_day', '/yes_or_no']],
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'карта дня', 'дай карту']
+    list_yes_no = ['вопрос', 'да', 'нет',]
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
                 'как жизнь']
+    if [word for word in list_yes_no if word in text]:
+        get_question(update, context)
     if text in list_card:
         deck_selection(update, context)
-    elif text[-1] == '?' :
+    elif text[-1] == '?':
         get_yes_or_no(update, context)
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
