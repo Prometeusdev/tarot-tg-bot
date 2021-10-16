@@ -13,14 +13,34 @@ PORT = int(os.environ.get('PORT', 80))
 
 secret_token = os.getenv('TOKEN')
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
+
+
+def get_yes_or_no(update, context):
+    text = update.effective_message.text
+    chat = update.effective_chat
+    try:
+        deck = text
+    except Exception as error:
+        logging.error(f'Такой колоды не существует: {error}')
+        deck = 'Таро Уэйта'
+    button = ReplyKeyboardMarkup([['/decks']],
+                                 resize_keyboard=True)
+    answer = get_new_image(deck)[0]
+    try:
+        file = open(f'/app/data/yes_or_no.txt', 'rb')
+        answer = file[get_new_image(deck)[0]]
+    except Exception as error:
+        logging.error(f'Ошибка в расположении картинки: {error}')
+        answer = 'Ответа пока нет'
+    context.bot.send_photo(
+        chat.id,
+        get_new_image(deck)[1],
+        caption='{}'.format(answer),
+        reply_markup=button)
+    return deck
 
 
 def get_deck(update, context):
@@ -34,11 +54,6 @@ def get_deck(update, context):
         deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
-    # context.bot.send_message(
-    #     chat_id=chat.id,
-    #     text='{}, Ваша карта дня'.format(name),
-    #     reply_markup=button
-    #     )
     context.bot.send_photo(
         chat.id,
         get_new_image(deck)[1],
@@ -151,6 +166,8 @@ def main():
 
     updater.dispatcher.add_handler(CommandHandler('start', get_start))
     updater.dispatcher.add_handler(CommandHandler('decks', deck_selection))
+    updater.dispatcher.add_handler(CommandHandler('yes_or_no',
+                                                  deck_selection))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
