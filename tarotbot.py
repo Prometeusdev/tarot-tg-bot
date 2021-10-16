@@ -13,6 +13,10 @@ PORT = int(os.environ.get('PORT', 80))
 
 secret_token = os.getenv('TOKEN')
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -30,12 +34,15 @@ def get_deck(update, context):
         deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['/decks']],
                                  resize_keyboard=True)
-    context.bot.send_message(
-        chat_id=chat.id,
-        text='{}, Ваша карта дня'.format(name),
-        reply_markup=button
-        )
-    context.bot.send_photo(chat.id, get_new_image(deck))
+    # context.bot.send_message(
+    #     chat_id=chat.id,
+    #     text='{}, Ваша карта дня'.format(name),
+    #     reply_markup=button
+    #     )
+    context.bot.send_photo(
+        chat.id,
+        get_new_image(deck)[1],
+        caption='{}, Ваша карта дня'.format(name))
     return deck
 
 
@@ -54,13 +61,16 @@ def deck_selection(update, context):
 def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
+    list_info = [random_number]
     try:
-        random_card = open(f'/app/static/images/{deck}/{random_number}.jpg',
+        random_card = open(f'/app/media/images/{deck}/{random_number}.jpg',
                            'rb')
+        list_info.append(random_card)
     except Exception as error:
         logging.error(f'Ошибка в расположении картинки: {error}')
-        random_card = open('/app/static/images/Таро Уэйта/back.jpg', 'rb')
-    return random_card
+        random_card = open('/app/media/images/Таро Уэйта/back.jpg', 'rb')
+        list_info.append(random_card)
+    return list_info
 
 
 def get_start(update, context):
