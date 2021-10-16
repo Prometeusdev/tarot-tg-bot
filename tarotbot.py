@@ -61,16 +61,13 @@ def deck_selection(update, context):
 def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
-    list_info = [random_number]
     try:
         random_card = open(f'/app/media/images/{deck}/{random_number}.jpg',
                            'rb')
-        list_info.append(random_card)
     except Exception as error:
         logging.error(f'Ошибка в расположении картинки: {error}')
         random_card = open('/app/media/images/Таро Уэйта/back.jpg', 'rb')
-        list_info.append(random_card)
-    return list_info
+    return random_number, random_card
 
 
 def get_start(update, context):
