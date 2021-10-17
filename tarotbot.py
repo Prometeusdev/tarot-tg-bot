@@ -25,11 +25,12 @@ def get_yes_or_no(update, context):
     deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    answer = yes_no_dict[get_new_image(deck)[0]]
-    print(f'random ДА НЕТ = {get_new_image(deck)[0]}')
+    number_card = get_new_image(deck)
+    answer = yes_no_dict[number_card[0]]
+    print(f'random ДА НЕТ = {number_card[0]}')
     context.bot.send_photo(
         chat.id,
-        get_new_image(deck)[1],
+        number_card[1],
         caption='{}'.format(answer),
         reply_markup=button)
     return deck
@@ -46,11 +47,12 @@ def get_deck(update, context):
         deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    answer = info_card_dict[get_new_image(deck)[0]]
-    print(f'random да карту = {get_new_image(deck)[0]}')
+    number_card = get_new_image(deck)
+    answer = info_card_dict[number_card[0]]
+    print(f'random да карту = {number_card[0]}')
     context.bot.send_photo(
         chat.id,
-        get_new_image(deck)[1],
+        number_card[1],
         caption=f'{name}, Ваша карта дня!\n{answer}',
         reply_markup=button)
     return deck
