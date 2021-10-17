@@ -26,7 +26,7 @@ def get_yes_or_no(update, context):
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     answer = yes_no_dict[get_new_image(deck)[0]]
-    print(get_new_image(deck)[0])
+    print(f'random ДА НЕТ = {get_new_image(deck)[0]}')
     context.bot.send_photo(
         chat.id,
         get_new_image(deck)[1],
@@ -47,11 +47,11 @@ def get_deck(update, context):
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     answer = info_card_dict[get_new_image(deck)[0]]
-    print(get_new_image(deck)[0])
+    print(f'random да карту = {get_new_image(deck)[0]}')
     context.bot.send_photo(
         chat.id,
         get_new_image(deck)[1],
-        caption=f'{name}, Ваша карта дня\n{answer}',
+        caption=f'{name}, Ваша карта дня!\n{answer}',
         reply_markup=button)
     return deck
 
@@ -78,7 +78,7 @@ def deck_selection(update, context):
 def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
-    print(random_number)
+    print(f'random_number = {random_number}')
     try:
         random_card = open(f'/app/media/images/{deck}/{random_number}.jpg',
                            'rb')
