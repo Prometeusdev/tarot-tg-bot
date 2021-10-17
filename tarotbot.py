@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
-from data.yes_or_no import yes_no_dict
+from data.dictionaries import yes_no_dict, info_card_dict
 
 
 load_dotenv()
@@ -25,12 +25,8 @@ def get_yes_or_no(update, context):
     deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    try:
-        answer = yes_no_dict[get_new_image(deck)[0]]
-        print(answer)
-    except Exception as error:
-        logging.error(f'Ошибка в расположении файла: {error}')
-        answer = 'Ответа пока нет'
+    answer = yes_no_dict[get_new_image(deck)[0]]
+    print(get_new_image(deck)[0])
     context.bot.send_photo(
         chat.id,
         get_new_image(deck)[1],
@@ -50,10 +46,12 @@ def get_deck(update, context):
         deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
+    answer = info_card_dict[get_new_image(deck)[0]]
+    print(get_new_image(deck)[0])
     context.bot.send_photo(
         chat.id,
         get_new_image(deck)[1],
-        caption='{}, Ваша карта дня'.format(name),
+        caption=f'{name}, Ваша карта дня\n{answer}',
         reply_markup=button)
     return deck
 
@@ -80,6 +78,7 @@ def deck_selection(update, context):
 def get_new_image(deck):
     random_number = random.randint(0, 77)
     deck = deck
+    print(random_number)
     try:
         random_card = open(f'/app/media/images/{deck}/{random_number}.jpg',
                            'rb')
