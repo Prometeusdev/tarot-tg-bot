@@ -23,7 +23,7 @@ logging.basicConfig(
 def get_yes_or_no(update, context):
     chat = update.effective_chat
     deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+    button = ReplyKeyboardMarkup([['Сбудется ли моё желание?']],
                                  resize_keyboard=True)
     number_card = get_new_image(deck)
     answer = yes_no_dict[number_card[0]]
@@ -60,7 +60,8 @@ def get_question(update, context):
     chat = update.effective_chat
     context.bot.send_message(
         chat_id=chat.id,
-        text='Задайте вопрос со знаком вопроса в конце предложения')
+        text=('Задайте вопрос со знаком вопроса в конце предложения или'
+              'мысленно загадайте своё желание и воспользуйтесь кнопкой'))
 
 
 def deck_selection(update, context):
