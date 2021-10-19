@@ -229,9 +229,9 @@ def another_words(update, context):
             0, 
             len(list_another_answer)-1)],
         print(random_answer)
-        if random_answer == 'help':
+        if random_answer == ['help']:
             get_help(update, context)
-        elif random_answer == 'sticker':
+        elif random_answer == ['sticker']:
             context.bot.send_sticker(
                 chat.id,
                 ('CAACAgIAAxkBAAEDHFxhbmwRWLa1ZySyHOeDfUFfcM4VQwACIQEAAvcCyA9E'
