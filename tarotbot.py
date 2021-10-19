@@ -166,15 +166,15 @@ def another_words(update, context):
                 'как жизнь']
     if [word for word in list_yes_no if word in text]:
         get_question(update, context)
-    if text in list_card:
+    elif text in list_card:
         deck_selection(update, context)
     elif text[-1] == '?':
         get_yes_or_no(update, context)
-    if text in list_help:
+    elif text in list_help:
         get_help(update, context)
-    if text in list_author:
+    elif text in list_author:
         get_author(update, context)
-    if text in list_tarot_layout:
+    elif text in list_tarot_layout:
         get_tarot_layout(update, context)
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
