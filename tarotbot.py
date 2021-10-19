@@ -91,6 +91,35 @@ def get_new_image(deck):
     return random_number, random_card
 
 
+def get_author(update, context):
+    chat = update.effective_chat
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                 resize_keyboard=True)
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=('Привет, я  Владимир\nПрограммист, backend-разработчик 👨‍💻.\n'
+              'Написал бота для своей мамы.\n'
+              'Надеюсь, этот бот и Вам пригодится.\n'
+              'Нашли проблему? Чат @Rume73'),
+        reply_markup=button
+        )
+
+
+def get_help(update, context):
+    chat = update.effective_chat
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                 resize_keyboard=True)
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=('Вы можете управлять мной, используя эти команды:\n'
+              '/card_of_the_day - вытащить карту дня\n'
+              '/yes_or_no - получить ответ "да-нет" на Ваше желание\n'
+              '/detailed_info - полный расклад'
+              '/author - разработчик бота'),
+        reply_markup=button
+        )
+
+
 def get_start(update, context):
     chat = update.effective_chat
     name = update.message.chat.first_name
@@ -99,7 +128,7 @@ def get_start(update, context):
     context.bot.send_message(
         chat_id=chat.id,
         text=('Привет, {}! Хочешь узнать, что тебя сегодня ждёт?\n'
-              'Выбери для начала колоду и Вам выпадет карта дня').format(name),
+              'Выбери для начала колоду и Вам выпадет карта дня ').format(name),
         reply_markup=button
         )
 
@@ -111,7 +140,8 @@ def another_words(update, context):
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'дай карту']
-    list_yes_no = ['вопрос', 'да', 'нет',]
+    list_yes_no = ['вопрос', 'да', 'нет']
+    list_help = ['помощь', 'help', 'бот']
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
                 'как жизнь']
@@ -119,6 +149,8 @@ def another_words(update, context):
         get_question(update, context)
     if text in list_card:
         deck_selection(update, context)
+    if text in list_help:
+        help(update, context)
     elif text[-1] == '?':
         get_yes_or_no(update, context)
     elif [word for word in list_hi if word in text]:
@@ -164,11 +196,29 @@ def another_words(update, context):
             reply_markup=button
             )
     else:
-        context.bot.send_message(
-            chat_id=chat.id,
-            text='{}, я Вас не понимаю, используйте меню команд'.format(name),
-            reply_markup=button
+        list_another_answer = [
+            ('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
+             'меню команд.').format(name),
+            'help',
+            'sticker',
+            ]
+        random_answer = list_another_answer[random.randint(
+            0, 
+            len(list_another_answer)-1)],
+        if random_answer == 'help':
+            help(update, context)
+        elif random_answer == 'sticker':
+            context.bot.send_sticker(
+                chat.id,
+                ('CAACAgIAAxkBAAEDHFxhbmwRWLa1ZySyHOeDfUFfcM4VQwACIQEAAvcCyA9E'
+                '9UdZozFIriEE')
             )
+        else:
+            context.bot.send_message(
+                chat_id=chat.id,
+                text=random_answer,
+                reply_markup=button
+                )
 
 
 def main():
@@ -186,6 +236,8 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
+    updater.dispatcher.add_handler(CommandHandler('help', get_help))
+    updater.dispatcher.add_handler(CommandHandler('author', get_author))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
     updater.start_webhook(listen="0.0.0.0",
