@@ -99,7 +99,7 @@ def get_tarot_layout(update, context):
         chat_id=chat.id,
         text=('Расклады таро: на любовь, отношения, финансовое состояние, '
               'профессиональную сферу❤️💵\n'
-              'Как обойти "острые углы"? Как избежать неприятностей?\n' 
+              'Как обойти "острые углы"? Как избежать неприятностей?\n'
               'Я помогу Вам в этом разобраться!\n'
               'Запись на консультацию в чат @Lenoktaro или '
               'в директ инстаграмма https://www.instagram.com/hellyloginson/'),
@@ -219,28 +219,19 @@ def another_words(update, context):
             reply_markup=button
             )
     else:
-        list_another_answer = [
-            ('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
-             'меню команд.').format(name),
-            'help',
-            'sticker',
-            ]
-        random_answer = list_another_answer[random.randint(
-            0, 
-            len(list_another_answer)-1)],
-        print(random_answer)
-        if random_answer == ['help']:
+        random_answer = random.randint(0, 2)
+        if random_answer == 0:
             get_help(update, context)
-        elif random_answer == ['sticker']:
+        elif random_answer == 1:
             context.bot.send_sticker(
                 chat.id,
                 ('CAACAgIAAxkBAAEDHFxhbmwRWLa1ZySyHOeDfUFfcM4VQwACIQEAAvcCyA9E'
-                '9UdZozFIriEE')
-            )
+                 '9UdZozFIriEE'))
         else:
             context.bot.send_message(
                 chat_id=chat.id,
-                text=random_answer,
+                text=('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
+                      'меню команд.').format(name),
                 reply_markup=button
                 )
 
