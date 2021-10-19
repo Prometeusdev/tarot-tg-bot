@@ -97,9 +97,9 @@ def get_author(update, context):
                                  resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
-        text=('Привет, я  Владимир\nПрограммист, backend-разработчик 👨‍💻.\n'
+        text=('Привет, я Владимир!\nПрограммист, backend-разработчик 👨‍💻\n'
               'Написал бота для своей мамы.\n'
-              'Надеюсь, этот бот и Вам пригодится.\n'
+              'Надеюсь, этот бот и Вам пригодится.\n\n'
               'Нашли проблему? Чат @Rume73'),
         reply_markup=button
         )
@@ -114,7 +114,7 @@ def get_help(update, context):
         text=('Вы можете управлять мной, используя эти команды:\n'
               '/card_of_the_day - вытащить карту дня\n'
               '/yes_or_no - получить ответ "да-нет" на Ваше желание\n'
-              '/detailed_info - полный расклад'
+              '/detailed_info - полный расклад\n'
               '/author - разработчик бота'),
         reply_markup=button
         )
@@ -150,7 +150,7 @@ def another_words(update, context):
     if text in list_card:
         deck_selection(update, context)
     if text in list_help:
-        help(update, context)
+        get_help(update, context)
     elif text[-1] == '?':
         get_yes_or_no(update, context)
     elif [word for word in list_hi if word in text]:
@@ -206,7 +206,7 @@ def another_words(update, context):
             0, 
             len(list_another_answer)-1)],
         if random_answer == 'help':
-            help(update, context)
+            get_help(update, context)
         elif random_answer == 'sticker':
             context.bot.send_sticker(
                 chat.id,
