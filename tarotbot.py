@@ -91,6 +91,22 @@ def get_new_image(deck):
     return random_number, random_card
 
 
+def get_tarot_layout(update, context):
+    chat = update.effective_chat
+    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                 resize_keyboard=True)
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=('Расклады таро: на любовь, отношения, финансовое состояние, '
+              'профессиональную сферу❤️💵\n'
+              'Как обойти "острые углы"? Как избежать неприятностей?\n' 
+              'Я помогу Вам в этом разобраться!\n'
+              'Запись на консультацию в чат @Lenoktaro или '
+              'в директ инстаграмма https://www.instagram.com/hellyloginson/'),
+        reply_markup=button
+        )
+
+
 def get_author(update, context):
     chat = update.effective_chat
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
@@ -114,7 +130,7 @@ def get_help(update, context):
         text=('Вы можете управлять мной, используя эти команды:\n'
               '/card_of_the_day - вытащить карту дня\n'
               '/yes_or_no - получить ответ "да-нет" на Ваше желание\n'
-              '/detailed_info - полный расклад\n'
+              '/tarot_layout - полный расклад\n'
               '/author - разработчик бота'),
         reply_markup=button
         )
@@ -128,7 +144,7 @@ def get_start(update, context):
     context.bot.send_message(
         chat_id=chat.id,
         text=('Привет, {}! Хочешь узнать, что тебя сегодня ждёт?\n'
-              'Выбери для начала колоду и Вам выпадет карта дня ').format(name),
+              'Выбери для начала колоду и Вам выпадет карта дня').format(name),
         reply_markup=button
         )
 
@@ -141,7 +157,10 @@ def another_words(update, context):
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'дай карту']
     list_yes_no = ['вопрос', 'да', 'нет']
-    list_help = ['помощь', 'help', 'бот']
+    list_help = ['помощь', 'help', 'хелп']
+    list_author = ['автор', 'разработчик', 'админ']
+    list_tarot_layout = ['полный расклад', 'услуги', 'расклады таро',
+                         'запись на консультацию', 'консультация']
     list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
                 'как жизнь']
@@ -149,10 +168,14 @@ def another_words(update, context):
         get_question(update, context)
     if text in list_card:
         deck_selection(update, context)
-    if text in list_help:
-        get_help(update, context)
     elif text[-1] == '?':
         get_yes_or_no(update, context)
+    if text in list_help:
+        get_help(update, context)
+    if text in list_author:
+        get_author(update, context)
+    if text in list_tarot_layout:
+        get_tarot_layout(update, context)
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
             '{}, привет, может погадаем?'.format(name),
@@ -187,12 +210,12 @@ def another_words(update, context):
             text=list_answer[random.randint(0, len(list_answer)-1)],
             reply_markup=button
             )
-    elif 'таролог' in text:
+    elif text == 'таролог':
         context.bot.send_message(
             chat_id=chat.id,
-            text='Елена Логинова, https://www.instagram.com/hellyloginson/ \n'
-                 'ТАРО ✳️ Предсказания, полезные советы.'
-                 'Отвечу на ваши вопросы',
+            text='Елена Логинова, https://www.instagram.com/hellyloginson/\n'
+                 'ТАРО ✳️ Предсказания, полезные советы.\n'
+                 'Отвечу на ваши вопросы @Lenoktaro',
             reply_markup=button
             )
     else:
@@ -205,6 +228,7 @@ def another_words(update, context):
         random_answer = list_another_answer[random.randint(
             0, 
             len(list_another_answer)-1)],
+        print(random_answer)
         if random_answer == 'help':
             get_help(update, context)
         elif random_answer == 'sticker':
@@ -236,6 +260,8 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
+    updater.dispatcher.add_handler(CommandHandler('tarot_layout',
+                                                  get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(CommandHandler('author', get_author))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
