@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+import tg_analytic
 
 from dotenv import load_dotenv
 from telegram import ReplyKeyboardMarkup
@@ -22,6 +23,8 @@ logging.basicConfig(
 
 def get_yes_or_no(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    tg_analytic.analysis(chat, text)
     deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
@@ -221,6 +224,16 @@ def another_words(update, context):
                  'Отвечу на ваши вопросы @Lenoktaro',
             reply_markup=button
             )
+    elif text == 'выведи статистику':
+        st = text.split(' ')
+        if 'txt' in st or 'тхт' in st:
+            tg_analytic.analysis(st, chat)
+            with open('%s.txt' %chat ,'r',encoding='UTF-8') as file:
+                context.send_document(chat, file)
+                tg_analytic.remove(chat)
+        else:
+            messages = tg_analytic.analysis(st, chat)
+            context.send_message(chat, messages)
     else:
         random_answer = random.randint(0, 2)
         if random_answer == 0:
