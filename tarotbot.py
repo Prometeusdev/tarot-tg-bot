@@ -148,12 +148,21 @@ def get_start(update, context):
     name = update.message.chat.first_name
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    context.bot.send_message(
-        chat_id=chat.id,
-        text=('Привет, {}! Хочешь узнать, что тебя сегодня ждёт?\n'
-              'Выбери для начала колоду и Вам выпадет карта дня').format(name),
-        reply_markup=button
-        )
+    if chat.type != chat.PRIVATE:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=('Привет, {}! Хочешь узнать, что тебя сегодня ждёт?\n'
+                  'Выбери для начала колоду и Вам выпадет карта '
+                  'дня').format(name),
+            reply_markup=button
+            )
+    else:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=('Привет! Хочешь узнать, что тебя сегодня ждёт?\n'
+                  'Выбери для начала колоду и Вам выпадет карта дня'),
+            reply_markup=button
+            )
 
 
 def another_words(update, context):
@@ -171,8 +180,6 @@ def another_words(update, context):
                          'запись на консультацию', 'консультация']
     list_hi = ['привет', 'здравствуй', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как настроение', 'как поживаешь', 'как жизнь']
-    print(f'это chat.id {chat.id}')
-    print(f'это admin_id {admin_id}')
     if text in list_yes_no:
         get_question(update, context)
     elif text in list_card:
