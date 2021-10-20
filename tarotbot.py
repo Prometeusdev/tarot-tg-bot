@@ -148,19 +148,22 @@ def get_start(update, context):
     name = update.message.chat.first_name
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    if chat.type != chat.PRIVATE:
+    if chat.type != 'private':
         context.bot.send_message(
             chat_id=chat.id,
-            text=('Привет, {}! Хочешь узнать, что тебя сегодня ждёт?\n'
-                  'Выбери для начала колоду и Вам выпадет карта '
-                  'дня').format(name),
+            text=('Привет, {}! Хотите узнать, что тебя сегодня ждёт?\n'
+                  'Выберите для начала колоду и Вам выпадет карта '
+                  'дня. Так же можете получить ответ \"да-нет\" на вопрос '
+                  'на Ваше желание').format(name),
             reply_markup=button
             )
     else:
         context.bot.send_message(
             chat_id=chat.id,
-            text=('Привет! Хочешь узнать, что тебя сегодня ждёт?\n'
-                  'Выбери для начала колоду и Вам выпадет карта дня'),
+            text=('Привет! Хотите узнать, что тебя сегодня ждёт?\n'
+                  'Выберите для начала колоду и Вам выпадет карта '
+                  'дня. Так же можете получить ответ \"да-нет\" на вопрос '
+                  'на Ваше желание'),
             reply_markup=button
             )
 
