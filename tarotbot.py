@@ -52,11 +52,18 @@ def get_deck(update, context):
                                  resize_keyboard=True)
     number_card = get_new_image(deck)
     answer = info_card_dict[number_card[0]]
-    context.bot.send_photo(
-        chat.id,
-        number_card[1],
-        caption=f'{name}, Ваша карта дня!\n{answer}',
-        reply_markup=button)
+    if chat.type == 'private':
+        context.bot.send_photo(
+            chat.id,
+            number_card[1],
+            caption=f'{name}, Ваша карта дня!\n{answer}',
+            reply_markup=button)
+    else:
+        context.bot.send_photo(
+            chat.id,
+            number_card[1],
+            caption=f'Ваша карта дня!\n{answer}',
+            reply_markup=button)
     return deck
 
 
@@ -227,11 +234,18 @@ def another_words(update, context):
             ('CAACAgIAAxkBAAIOqWFnGBi90XgL4WneLHIN2i7PF2KgAAI1AQACMNSdEbS4Nf1m'
              'oLZ8IQQ'),
         ]
-        context.bot.send_message(
-            chat_id=chat.id,
-            text=list_hi_answer[random.randint(0, len(list_hi_answer)-1)],
-            reply_markup=button
-            )
+        if chat.type == 'private':
+            context.bot.send_message(
+                chat_id=chat.id,
+                text=list_hi_answer[random.randint(0, len(list_hi_answer)-1)],
+                reply_markup=button
+                )
+        else:
+            context.bot.send_message(
+                chat_id=chat.id,
+                text='Привет 👋',
+                reply_markup=button
+                )
         context.bot.send_sticker(
             chat.id,
             list_hi_sticker[random.randint(0, len(list_hi_sticker)-1)]
@@ -278,12 +292,20 @@ def another_words(update, context):
                 ('CAACAgIAAxkBAAEDHFxhbmwRWLa1ZySyHOeDfUFfcM4VQwACIQEAAvcCyA9E'
                  '9UdZozFIriEE'))
         else:
-            context.bot.send_message(
-                chat_id=chat.id,
-                text=('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
-                      'меню команд.').format(name),
-                reply_markup=button
-                )
+            if chat.type == 'private':
+                context.bot.send_message(
+                    chat_id=chat.id,
+                    text=('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
+                        'меню команд.').format(name),
+                    reply_markup=button
+                    )
+            else:
+                context.bot.send_message(
+                    chat_id=chat.id,
+                    text=('Я Вас не понимаю 🤔, Попробуйте воспользоваться '
+                        'меню команд.'),
+                    reply_markup=button
+                    )
 
 
 def main():
