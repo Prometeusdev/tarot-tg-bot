@@ -171,6 +171,8 @@ def another_words(update, context):
                          'запись на консультацию', 'консультация']
     list_hi = ['привет', 'здравствуй', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как настроение', 'как поживаешь', 'как жизнь']
+    print(f'это chat.id {chat.id}')
+    print(f'это admin_id {admin_id}')
     if text in list_yes_no:
         get_question(update, context)
     elif text in list_card:
