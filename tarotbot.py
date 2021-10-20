@@ -243,7 +243,7 @@ def another_words(update, context):
             reply_markup=button
             )
     elif text[:10] == 'статистика':
-        if chat.id == admin_id:
+        if str(chat.id) == admin_id:
             st = text.split(' ')
             if 'txt' in st or 'тхт' in st:
                 tg_analytic.analysis(st, chat.id)
@@ -256,7 +256,7 @@ def another_words(update, context):
         else:
             context.bot.send_message(
                 chat.id,
-                'у вас нет прав 😋')
+                'У вас нет прав 😋')
     else:
         random_answer = random.randint(0, 2)
         if random_answer == 0:
