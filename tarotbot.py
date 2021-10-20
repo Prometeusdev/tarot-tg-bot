@@ -15,6 +15,7 @@ load_dotenv()
 PORT = int(os.environ.get('PORT', 80))
 
 secret_token = os.getenv('TOKEN')
+admin_id = os.getenv('ID')
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -239,7 +240,7 @@ def another_words(update, context):
                  'Отвечу на ваши вопросы @Lenoktaro',
             reply_markup=button
             )
-    elif text[:10] == 'статистика':
+    elif text[:10] == 'статистика' and chat.id == admin_id:
         st = text.split(' ')
         if 'txt' in st or 'тхт' in st:
             tg_analytic.analysis(st, chat.id)
