@@ -148,7 +148,8 @@ def get_start(update, context):
     name = update.message.chat.first_name
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
-    if chat.type != 'private':
+    print(chat.type)
+    if chat.type == 'private':
         context.bot.send_message(
             chat_id=chat.id,
             text=('Привет, {}! Хотите узнать, что тебя сегодня ждёт?\n'
