@@ -244,11 +244,11 @@ def another_words(update, context):
         if 'txt' in st or 'тхт' in st:
             tg_analytic.analysis(st, chat.id)
             with open('%s.txt' %chat.id,'r',encoding='UTF-8') as file:
-                context.send_document(chat.id, file)
+                context.bot.send_document(chat.id, file)
                 tg_analytic.remove(chat.id)
         else:
             messages = tg_analytic.analysis(st, chat.id)
-            context.send_message(chat.id, messages)
+            context.bot.send_message(chat.id, messages)
     else:
         random_answer = random.randint(0, 2)
         if random_answer == 0:
