@@ -162,15 +162,16 @@ def another_words(update, context):
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'дай карту']
-    list_yes_no = ['вопрос', 'да', 'нет']
+    list_yes_no = ['вопрос', 'да', 'нет', 'да-нет']
     list_help = ['помощь', 'help', 'хелп']
     list_author = ['автор', 'разработчик', 'админ']
+    list_thanks = ['спасибо', 'благодарю', 'благодарствую', 'thank']
     list_tarot_layout = ['полный расклад', 'услуги', 'расклады таро',
                          'запись на консультацию', 'консультация']
-    list_hi = ['привет', 'здравствуй', 'здравствуйте', 'хай', 'хелло', '👋']
+    list_hi = ['привет', 'здравствуй', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как ты', 'как настроение', 'как поживаешь',
                 'как жизнь']
-    if [word for word in list_yes_no if word in text]:
+    if text in list_yes_no:
         get_question(update, context)
     elif text in list_card:
         deck_selection(update, context)
@@ -182,6 +183,21 @@ def another_words(update, context):
         get_author(update, context)
     elif text in list_tarot_layout:
         get_tarot_layout(update, context)
+    elif [word for word in list_thanks if word in text]:
+        list_thanks_sticker = [
+            ('CAACAgIAAxkBAAEDHy9hcIXrEYxTHtmeu2spfLrc05jU1wAC9wADVp29CgtyJB1I'
+             '9A0wIQQ'),
+            ('CAACAgIAAxkBAAEDHzNhcIYufGz2jIQsXRVIAlJK97RdkwACUgEAAjDUnRERwgZS'
+             '_w81pCEE'),
+            ('CAACAgIAAxkBAAEDHzVhcIZp1fyyTkf7-BbSi8uGr5QkswACLgkAAhhC7ghmx6Iw'
+             'r7yx9CEE'),
+            ('CAACAgEAAxkBAAEDHzdhcIbK3yNFllb94x81SRPMlcTydwAC6wEAAjgOghGzhgTO'
+             '4ZxJOSEE'),
+        ]
+        context.bot.send_sticker(
+            chat.id,
+            list_thanks_sticker[random.randint(0, len(list_thanks_sticker)-1)]
+            )
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
             '{}, привет, может погадаем?'.format(name),
