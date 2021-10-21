@@ -80,7 +80,7 @@ def analysis(bid):
     if 'команды' in bid:
         message_to_user += 'Статистика команд за последние %s %s: \n' % (season, day_type.get(season, day_type[season]))
         for days, commands in zip(list_of_dates_in_df_user, commands_in_each_day):
-            message_to_user += 'Дата: %s\n Использованные команды:\n' % days
+            message_to_user += 'Дата: %s\nИспользованные команды:\n' % days
             for i in unique_commands:
                 if i in commands:
                     message_to_user += '%s - %s раз\n' % (i, commands.get(i))
