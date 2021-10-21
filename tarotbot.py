@@ -200,19 +200,30 @@ def get_help(update, context):
         )
 
 
-def get_format(update, _):
-    keyboard = [
-        [
-            InlineKeyboardButton('Команды', callback_data='Команды'),
-            InlineKeyboardButton('Пользователи',
-                                    callback_data='Пользователи')
-        ],
-        [InlineKeyboardButton('Статистика в файле .txt',
-                                callback_data='тхт')]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Выберите формат статистики',
-                                reply_markup=reply_markup)
+def get_format(update, context):
+    chat = update.effective_chat
+    if str(chat.id) == admin_id:
+        keyboard = [
+            [
+                InlineKeyboardButton('Команды', callback_data='Команды'),
+                InlineKeyboardButton('Пользователи',
+                                        callback_data='Пользователи')
+            ],
+            [InlineKeyboardButton('Статистика в файле .txt',
+                                    callback_data='тхт')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('Выберите формат статистики',
+                                    reply_markup=reply_markup)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=('У вас нет прав 😋'),
+            reply_markup=button
+            )
+
 
 
 def number_of_days(update, _):
@@ -240,29 +251,20 @@ def number_of_days(update, _):
 
 def get_statistics(update, context):
     chat = update.effective_chat
-    if str(chat.id) == admin_id:
-        chat = update.effective_chat
-        query = update.callback_query
-        query.answer()
-        text = (f'статистика {number_of_days(update, context)} '
-                f'{get_format(update, context)}')
-        st = text.split(' ')
-        if 'txt' in st or 'тхт' in st:
-            tg_analytic.analysis(st)
-            with open('Статистика.txt','r',encoding='UTF-8') as file:
-                context.bot.send_document(chat.id, file)
-                tg_analytic.remove()
-        else:
-            messages = tg_analytic.analysis(st)
-            context.bot.send_message(chat.id, messages)
+    query = update.callback_query
+    format = query.data
+    query.answer()
+    text = (f'статистика 7 '
+            f'{format}')
+    st = text.split(' ')
+    if 'txt' in st or 'тхт' in st:
+        tg_analytic.analysis(st)
+        with open('Статистика.txt','r',encoding='UTF-8') as file:
+            context.bot.send_document(chat.id, file)
+            tg_analytic.remove()
     else:
-        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                     resize_keyboard=True)
-        context.bot.send_message(
-            chat_id=chat.id,
-            text=('У вас нет прав 😋'),
-            reply_markup=button
-            )
+        messages = tg_analytic.analysis(st)
+        context.bot.send_message(chat.id, messages)
 
 
 def get_start(update, context):
@@ -443,7 +445,7 @@ def main():
                                                   get_question))
 
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
-                                                  get_statistics))
+                                                  get_format))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
