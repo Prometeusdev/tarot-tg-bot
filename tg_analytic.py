@@ -34,7 +34,7 @@ def statistics(user_id, command):
 
 
 # make report
-def analysis(user_id, bid):
+def analysis(bid, user_id):
     season = int(bid[1])
     df = pd.read_csv('data.csv', delimiter=';', encoding='utf8')
     number_of_users = len(df['id'].unique())

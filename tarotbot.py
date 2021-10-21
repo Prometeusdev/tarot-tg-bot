@@ -24,8 +24,6 @@ logging.basicConfig(
 
 def get_yes_or_no(update, context):
     chat = update.effective_chat
-    text = update.effective_message.text
-    tg_analytic.analysis(chat.id, text)
     deck = 'Таро Уэйта'
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
@@ -69,6 +67,8 @@ def get_deck(update, context):
 
 def get_question(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Сбудется ли моё желание?']],
                                  resize_keyboard=True)
     context.bot.send_message(
