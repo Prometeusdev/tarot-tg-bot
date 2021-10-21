@@ -25,8 +25,12 @@ logging.basicConfig(
 def get_yes_or_no(update, context):
     chat = update.effective_chat
     deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     number_card = get_new_image(deck)
     answer = yes_no_dict[number_card[0]]
     context.bot.send_photo(
@@ -46,8 +50,12 @@ def get_deck(update, context):
     except Exception as error:
         logging.error(f'Такой колоды не существует: {error}')
         deck = 'Таро Уэйта'
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     number_card = get_new_image(deck)
     answer = info_card_dict[number_card[0]]
     if chat.type == 'private':
@@ -120,8 +128,12 @@ def get_tarot_layout(update, context):
     if text in possible_commands:
         text = 'Запрос полного расклада'
     tg_analytic.statistics(chat.id, text)
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
         text=('Расклады таро: на любовь, отношения, финансовое состояние, '
@@ -144,8 +156,12 @@ def get_author(update, context):
     if text in possible_commands:
         text = 'Запрос автора'
     tg_analytic.statistics(chat.id, text)
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
         text=('Привет, я Владимир!\nПрограммист, backend-разработчик 👨‍💻\n'
@@ -163,8 +179,12 @@ def get_help(update, context):
     if text in possible_commands:
         text = 'Запрос полного расклада'
     tg_analytic.statistics(chat.id, text)
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     context.bot.send_message(
         chat_id=chat.id,
         text=('Вы можете управлять мной, используя эти команды:\n'
@@ -176,13 +196,28 @@ def get_help(update, context):
         )
 
 
+def get_statistics(update, context):
+    chat = update.effective_chat
+    button = ReplyKeyboardMarkup([['Команды', 'Пользователи'], ['файл .txt']],
+                                 resize_keyboard=True)
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=('Выберите нужную статистику'),
+        reply_markup=button
+        )
+
+
 def get_start(update, context):
     chat = update.effective_chat
     name = update.message.chat.first_name
     text = update.effective_message.text
     tg_analytic.statistics(chat.id, text)
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     print(chat.type)
     if chat.type == 'private':
         context.bot.send_message(
@@ -348,6 +383,10 @@ def main():
                                                   get_question))
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
+    if str(updater.dispatcher.chat.id) == admin_id:
+        updater.dispatcher.add_handler(MessageHandler(
+            Filters.regex('Статистика'),
+            get_statistics))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
