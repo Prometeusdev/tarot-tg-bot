@@ -469,10 +469,10 @@ def main():
         entry_points=[MessageHandler(Filters.regex('Статистика'), get_format)],
         states={
             FIRST: [
-                CallbackQueryHandler(get_statistics),
+                CallbackQueryHandler(number_of_days),
             ],
             SECOND: [
-                CallbackQueryHandler(number_of_days),
+                CallbackQueryHandler(get_statistics),
             ],
         },
         fallbacks=[CommandHandler('start', get_start)],
