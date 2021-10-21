@@ -94,9 +94,9 @@ def analysis(bid):
             message_to_user += 'Дата: %s\nИспользованные команды:\n' % days
             for i in unique_commands:
                 if i in commands:
-                    message_to_user += '%s - %s раз\n' % (i, commands.get(i))
+                    message_to_user += '[%s] - %s раз\n' % (i, commands.get(i))
                 else:
-                    message_to_user += '%s - 0 раз\n' % i
+                    message_to_user += '[%s] - 0 раз\n' % i
 
     if 'txt' in bid or 'тхт' in bid:
         with open('Статистика.txt', 'w', encoding='UTF-8') as fil:
