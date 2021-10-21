@@ -300,7 +300,7 @@ def another_words(update, context):
             st = text.split(' ')
             if 'txt' in st or 'тхт' in st:
                 tg_analytic.analysis(st, chat.id)
-                with open('%s.txt' %chat.id,'r',encoding='UTF-8') as file:
+                with open('Статистика за %s %s.txt' % (int(st[1]), tg_analytic.day_type.get(int(st[1]), tg_analytic.day_type[int(st[1])])),'r',encoding='UTF-8') as file:
                     context.bot.send_document(chat.id, file)
                     tg_analytic.remove(chat.id)
             else:
