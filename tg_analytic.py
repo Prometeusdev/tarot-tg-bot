@@ -13,6 +13,7 @@ users_type = {
     4: 'пользователя'
 }
 day_type = {
+    0: 'дней',
     1: 'день',
     2: 'дня',
     3: 'дня',
@@ -87,7 +88,7 @@ def analysis(bid, user_id):
                     message_to_user += '%s - 0 раз\n' % i
                     
     if 'txt' in bid or 'тхт' in bid:
-        with open('%s.txt' % user_id, 'w', encoding='UTF-8') as fil:
+        with open('Статистика за %s %s.txt' % (season, day_type.get(season, day_type[season])), 'w', encoding='UTF-8') as fil:
             fil.write(message_to_user)
             fil.close()
     else:
