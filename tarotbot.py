@@ -265,21 +265,17 @@ def get_statistics(update, context):
     query.answer()
     print(answer)
     text = (f'статистика {answer}')
-    if text[:10] == 'статистика':
-        st = text.split(' ')
-        if 'txt' in st or 'тхт' in st:
-            tg_analytic.analysis(st)
-            with open('Статистика.txt', 'r', encoding='UTF-8') as file:
-                context.bot.send_document(chat.id, file)
-                tg_analytic.remove()
-        else:
-            messages = tg_analytic.analysis(st)
-            context.bot.send_message(chat.id, messages)
+    st = text.split(' ')
+    if 'txt' in st or 'тхт' in st:
+        tg_analytic.analysis(st)
+        with open('Статистика.txt', 'r', encoding='UTF-8') as file:
+            context.bot.send_document(chat.id, file)
+            tg_analytic.remove()
     else:
-        context.bot.send_message(
-            chat_id=chat.id,
-            text='Обновите информацию по выводу статистики'
-            )
+        messages = tg_analytic.analysis(st)
+        context.bot.send_message(chat.id, messages)
+    query.edit_message_text(text="Будет нужна ещё статистика, пиши!")
+    return ConversationHandler.END
 
 
 def get_start(update, context):
