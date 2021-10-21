@@ -299,12 +299,12 @@ def another_words(update, context):
         if str(chat.id) == admin_id:
             st = text.split(' ')
             if 'txt' in st or 'тхт' in st:
-                tg_analytic.analysis(st, chat.id)
-                with open('Статистика за %s %s.txt' % (int(st[1]), tg_analytic.day_type.get(int(st[1]), tg_analytic.day_type[int(st[1])])),'r',encoding='UTF-8') as file:
+                tg_analytic.analysis(st)
+                with open('Статистика.txt','r',encoding='UTF-8') as file:
                     context.bot.send_document(chat.id, file)
-                    tg_analytic.remove(chat.id)
+                    tg_analytic.remove()
             else:
-                messages = tg_analytic.analysis(st, chat.id)
+                messages = tg_analytic.analysis(st)
                 context.bot.send_message(chat.id, messages)
         else:
             context.bot.send_message(

@@ -24,8 +24,8 @@ for days in range(5, 10000):
 
 
 # remove txt file
-def remove(user_id):
-    path = os.getcwd() + '/%s.txt' % user_id
+def remove():
+    path = os.getcwd() + 'Статистика.txt'
     os.remove(path)
 
 
@@ -38,7 +38,7 @@ def statistics(user_id, command):
 
 
 # make report
-def analysis(bid, user_id):
+def analysis(bid):
     season = int(bid[1])
     df = pd.read_csv('data/data.csv', delimiter=';', encoding='utf8')
     number_of_users = len(df['id'].unique())
@@ -80,15 +80,15 @@ def analysis(bid, user_id):
     if 'команды' in bid:
         message_to_user += 'Статистика команд за последние %s %s: \n' % (season, day_type.get(season, day_type[season]))
         for days, commands in zip(list_of_dates_in_df_user, commands_in_each_day):
-            message_to_user += 'Дата: %s\n\nКоманды:\n' % days
+            message_to_user += 'Дата: %s\n Использованные команды:\n' % days
             for i in unique_commands:
                 if i in commands:
                     message_to_user += '%s - %s раз\n' % (i, commands.get(i))
                 else:
                     message_to_user += '%s - 0 раз\n' % i
-                    
+
     if 'txt' in bid or 'тхт' in bid:
-        with open('Статистика за %s %s.txt' % (season, day_type.get(season, day_type[season])), 'w', encoding='UTF-8') as fil:
+        with open('Статистика.txt', 'w', encoding='UTF-8') as fil:
             fil.write(message_to_user)
             fil.close()
     else:
