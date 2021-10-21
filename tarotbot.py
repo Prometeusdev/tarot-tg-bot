@@ -205,16 +205,19 @@ def get_format(update, context):
     if str(chat.id) == admin_id:
         keyboard = [
             [
-                InlineKeyboardButton('Команды', callback_data='Команды'),
+                InlineKeyboardButton('Команды', callback_data='команды'),
                 InlineKeyboardButton('Пользователи',
-                                        callback_data='Пользователи')
+                                     callback_data='пользователи')
             ],
+            [InlineKeyboardButton('Пользователи команды',
+                                  callback_data='пользователи команды')],
             [InlineKeyboardButton('Статистика в файле .txt',
-                                    callback_data='тхт')]
+                                  callback_data='тхт')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text('Выберите формат статистики',
-                                    reply_markup=reply_markup)
+                                  reply_markup=reply_markup)
+        return FIRST
     else:
         button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                      resize_keyboard=True)
@@ -225,41 +228,47 @@ def get_format(update, context):
             )
 
 
-
 def number_of_days(update, _):
-    keyboard = [
-        [   
-            InlineKeyboardButton('1', callback_data='1'),
-            InlineKeyboardButton('2', callback_data='2'),
-            InlineKeyboardButton('3', callback_data='3'),
+    query = update.callback_query
+    if query.data == 'тхт':
+        format = 'пользователи команды тхт'
+    else:
+        format = query.data
+    query.answer()
+    keyboard2 = [
+        [
+            InlineKeyboardButton('1', callback_data=f'1 {format}'),
+            InlineKeyboardButton('2', callback_data=f'2 {format}'),
+            InlineKeyboardButton('3', callback_data=f'3 {format}'),
         ],
-        [   
-            InlineKeyboardButton('4', callback_data='4'),
-            InlineKeyboardButton('5', callback_data='5'),
-            InlineKeyboardButton('6', callback_data='6'),
+        [
+            InlineKeyboardButton('4', callback_data=f'4 {format}'),
+            InlineKeyboardButton('5', callback_data=f'5 {format}'),
+            InlineKeyboardButton('6', callback_data=f'6 {format}'),
         ],
-        [   
-            InlineKeyboardButton('7', callback_data='7'),
-            InlineKeyboardButton('8', callback_data='8'),
-            InlineKeyboardButton('9', callback_data='9'),
+        [
+            InlineKeyboardButton('7', callback_data=f'7 {format}'),
+            InlineKeyboardButton('8', callback_data=f'8 {format}'),
+            InlineKeyboardButton('9', callback_data=f'9 {format}'),
         ]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = InlineKeyboardMarkup(keyboard2)
     update.message.reply_text('Выберите количество дней',
                               reply_markup=reply_markup)
+    return SECOND
 
 
 def get_statistics(update, context):
     chat = update.effective_chat
     query = update.callback_query
-    format = query.data
+    answer = query.data
     query.answer()
-    text = (f'статистика 7 '
-            f'{format}')
+    print(answer)
+    text = (f'статистика {answer}')
     st = text.split(' ')
     if 'txt' in st or 'тхт' in st:
         tg_analytic.analysis(st)
-        with open('Статистика.txt','r',encoding='UTF-8') as file:
+        with open('Статистика.txt', 'r', encoding='UTF-8') as file:
             context.bot.send_document(chat.id, file)
             tg_analytic.remove()
     else:
@@ -395,7 +404,7 @@ def another_words(update, context):
             st = text.split(' ')
             if 'txt' in st or 'тхт' in st:
                 tg_analytic.analysis(st)
-                with open('Статистика.txt','r',encoding='UTF-8') as file:
+                with open('Статистика.txt', 'r', encoding='UTF-8') as file:
                     context.bot.send_document(chat.id, file)
                     tg_analytic.remove()
             else:
@@ -419,14 +428,14 @@ def another_words(update, context):
                 context.bot.send_message(
                     chat_id=chat.id,
                     text=('{}, я Вас не понимаю 🤔, Попробуйте воспользоваться '
-                        'меню команд.').format(name),
+                          'меню команд.').format(name),
                     reply_markup=button
                     )
             else:
                 context.bot.send_message(
                     chat_id=chat.id,
                     text=('Я Вас не понимаю 🤔, Попробуйте воспользоваться '
-                        'меню команд.'),
+                          'меню команд.'),
                     reply_markup=button
                     )
 
@@ -444,8 +453,8 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
 
-    updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
-                                                  get_format))
+    # updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
+    #                                               get_format))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
@@ -453,7 +462,24 @@ def main():
                                                   get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(CommandHandler('author', get_author))
-    updater.dispatcher.add_handler(CallbackQueryHandler(get_statistics))
+    # updater.dispatcher.add_handler(CallbackQueryHandler(get_statistics))
+
+
+    conv_handler = ConversationHandler(
+        entry_points=[MessageHandler(Filters.regex('Статистика'), get_format)],
+        states={
+            FIRST: [
+                CallbackQueryHandler(get_statistics),
+            ],
+            SECOND: [
+                CallbackQueryHandler(number_of_days),
+            ],
+        },
+        fallbacks=[CommandHandler('start', get_start)],
+    )
+    updater.dispatcher.add_handler(conv_handler)
+
+
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
     updater.start_webhook(listen="0.0.0.0",
