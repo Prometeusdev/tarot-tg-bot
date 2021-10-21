@@ -68,6 +68,9 @@ def get_deck(update, context):
 def get_question(update, context):
     chat = update.effective_chat
     text = update.effective_message.text
+    possible_commands = ['/yes_or_no', 'вопрос', 'да', 'нет', 'да-нет']
+    if text in possible_commands:
+        text = 'Запрос Да-нет'
     tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Сбудется ли моё желание?']],
                                  resize_keyboard=True)
@@ -80,6 +83,12 @@ def get_question(update, context):
 
 def deck_selection(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    possible_commands = ['/card_of_the_day', 'выбрать колоду', 'колода',
+                         'дай карту']
+    if text in possible_commands:
+        text = 'Запрос карты дня'
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([
         ['Таро Уэйта', 'Таро Божественных Животных']
         ],
@@ -104,6 +113,13 @@ def get_new_image(deck):
 
 def get_tarot_layout(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    possible_commands = ['/tarot_layout', 'полный расклад', 'услуги',
+                         'расклады таро', 'запись на консультацию',
+                         'консультация']
+    if text in possible_commands:
+        text = 'Запрос полного расклада'
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     context.bot.send_message(
@@ -123,6 +139,11 @@ def get_tarot_layout(update, context):
 
 def get_author(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    possible_commands = ['/author', 'автор', 'разработчик', 'админ']
+    if text in possible_commands:
+        text = 'Запрос автора'
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     context.bot.send_message(
@@ -137,6 +158,11 @@ def get_author(update, context):
 
 def get_help(update, context):
     chat = update.effective_chat
+    text = update.effective_message.text
+    possible_commands = ['/help', 'помощь', 'help', 'хелп']
+    if text in possible_commands:
+        text = 'Запрос полного расклада'
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     context.bot.send_message(
@@ -153,6 +179,8 @@ def get_help(update, context):
 def get_start(update, context):
     chat = update.effective_chat
     name = update.message.chat.first_name
+    text = update.effective_message.text
+    tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                  resize_keyboard=True)
     print(chat.type)
