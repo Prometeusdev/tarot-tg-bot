@@ -16,8 +16,11 @@ day_type = {
     1: 'день',
     2: 'дня',
     3: 'дня',
-    4: 'дня'
+    4: 'дня',
 }
+for days in range(5, 10000):
+    day_type[days] = 'дней'
+
 
 # remove txt file
 def remove(user_id):
@@ -40,8 +43,8 @@ def analysis(bid, user_id):
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
 
-    message_to_user = 'Статистика использования бота за %s %s: \n' % (season, day_type.get(season, 'дней'))
-    message_to_user += 'Всего статистика собрана за %s %s: \n' % (number_of_days, day_type.get(season, 'дней'))
+    message_to_user = 'Статистика использования бота за %s %s: \n' % (season, day_type.get(season, day_type[season]))
+    message_to_user += 'Всего статистика собрана за %s %s: \n' % (number_of_days, day_type.get(season, day_type[season]))
     if season > number_of_days:
         season = number_of_days
         message_to_user += 'Указанное вами количество дней больше, чем имеется\n' \
@@ -70,13 +73,13 @@ def analysis(bid, user_id):
         message_to_user += 'За всё время бота использовало: ' + '%s' % number_of_users \
                    + ' %s ' % users_type.get(number_of_users, 'пользователей') + '\n' \
                                                                                  'Пользователей за последние %s %s: \n' % (
-                       season, day_type.get(season, 'дней'))
+                       season, day_type.get(season, day_type[season]))
         for days, number, comm_day in zip(list_of_dates_in_df_user, list_of_number_of_user_in_df_user, commands_in_each_day):
-            message_to_user += 'Дата: %s Количество: %d Из них новых: %s\n' % (days, number, comm_day.get('/start', 0))
+            message_to_user += 'Дата: %s Количество: %d. Из них новых: %s\n\n' % (days, number, comm_day.get('/start', 0))
     if 'команды' in bid:
-        message_to_user += 'Статистика команд за последние %s %s: \n' % (season, day_type.get(season, 'дней'))
+        message_to_user += 'Статистика команд за последние %s %s: \n' % (season, day_type.get(season, day_type[season]))
         for days, commands in zip(list_of_dates_in_df_user, commands_in_each_day):
-            message_to_user += 'Дата: %s\n' % days
+            message_to_user += 'Дата: %s\n\nКоманды:\n' % days
             for i in unique_commands:
                 if i in commands:
                     message_to_user += '%s - %s раз\n' % (i, commands.get(i))
