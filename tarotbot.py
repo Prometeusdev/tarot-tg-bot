@@ -4,8 +4,10 @@ import random
 import tg_analytic
 
 from dotenv import load_dotenv
-from telegram import ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
+                      InlineKeyboardMarkup)
+from telegram.ext import (Updater, CommandHandler, MessageHandler,
+                          CallbackQueryHandler, Filters)
 
 from data.dictionaries import yes_no_dict, info_card_dict
 
@@ -198,13 +200,33 @@ def get_help(update, context):
 
 def get_statistics(update, context):
     chat = update.effective_chat
-    button = ReplyKeyboardMarkup([['Команды', 'Пользователи'], ['файл .txt']],
-                                 resize_keyboard=True)
-    context.bot.send_message(
-        chat_id=chat.id,
-        text=('Выберите нужную статистику'),
-        reply_markup=button
-        )
+    if str(chat.id) == admin_id:
+        keyboard = [
+            [
+                InlineKeyboardButton('Команды', callback_data='1'),
+                InlineKeyboardButton('Пользователи', callback_data='2')
+            ],
+            [InlineKeyboardButton('Статистика в файле .txt',
+                                  callback_data='3')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        update.message.reply_text('Выберите нужную статистику',
+                                  reply_markup=reply_markup)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=('У вас нет прав 😋'),
+            reply_markup=button
+            )
+
+
+def number_of_days(update, _):
+    query = update.callback_query
+    variant = query.data
+    query.answer()
+    query.edit_message_text(text=f"Выбранный вариант: {variant}")
 
 
 def get_start(update, context):
@@ -383,10 +405,8 @@ def main():
                                                   get_question))
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
-    if str(updater.dispatcher.chat.id) == admin_id:
-        updater.dispatcher.add_handler(MessageHandler(
-            Filters.regex('Статистика'),
-            get_statistics))
+    updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
+                                                  get_statistics))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
@@ -394,6 +414,7 @@ def main():
                                                   get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(CommandHandler('author', get_author))
+    updater.dispatcher.add_handler(CallbackQueryHandler(number_of_days))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
     updater.start_webhook(listen="0.0.0.0",
