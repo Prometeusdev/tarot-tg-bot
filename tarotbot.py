@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
                       InlineKeyboardMarkup)
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
-                          CallbackQueryHandler, Filters)
+                          CallbackQueryHandler, Filters, ConversationHandler)
 
 from data.dictionaries import yes_no_dict, info_card_dict
 
@@ -18,6 +18,8 @@ PORT = int(os.environ.get('PORT', 80))
 
 secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
+
+FIRST, SECOND = range(2)
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -198,20 +200,61 @@ def get_help(update, context):
         )
 
 
+def get_format(update, _):
+    keyboard = [
+        [
+            InlineKeyboardButton('Команды', callback_data='Команды'),
+            InlineKeyboardButton('Пользователи',
+                                    callback_data='Пользователи')
+        ],
+        [InlineKeyboardButton('Статистика в файле .txt',
+                                callback_data='тхт')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Выберите формат статистики',
+                                reply_markup=reply_markup)
+
+
+def number_of_days(update, _):
+    keyboard = [
+        [   
+            InlineKeyboardButton('1', callback_data='1'),
+            InlineKeyboardButton('2', callback_data='2'),
+            InlineKeyboardButton('3', callback_data='3'),
+        ],
+        [   
+            InlineKeyboardButton('4', callback_data='4'),
+            InlineKeyboardButton('5', callback_data='5'),
+            InlineKeyboardButton('6', callback_data='6'),
+        ],
+        [   
+            InlineKeyboardButton('7', callback_data='7'),
+            InlineKeyboardButton('8', callback_data='8'),
+            InlineKeyboardButton('9', callback_data='9'),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Выберите количество дней',
+                              reply_markup=reply_markup)
+
+
 def get_statistics(update, context):
     chat = update.effective_chat
     if str(chat.id) == admin_id:
-        keyboard = [
-            [
-                InlineKeyboardButton('Команды', callback_data='1'),
-                InlineKeyboardButton('Пользователи', callback_data='2')
-            ],
-            [InlineKeyboardButton('Статистика в файле .txt',
-                                  callback_data='3')]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        update.message.reply_text('Выберите нужную статистику',
-                                  reply_markup=reply_markup)
+        chat = update.effective_chat
+        query = update.callback_query
+        query.answer()
+        text = (f'статистика {number_of_days(update, context)} '
+                f'{get_format(update, context)}')
+        st = text.split(' ')
+        if 'txt' in st or 'тхт' in st:
+            tg_analytic.analysis(st)
+            with open('Статистика.txt','r',encoding='UTF-8') as file:
+                context.bot.send_document(chat.id, file)
+                tg_analytic.remove()
+        else:
+            messages = tg_analytic.analysis(st)
+            context.bot.send_message(chat.id, messages)
     else:
         button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                      resize_keyboard=True)
@@ -220,13 +263,6 @@ def get_statistics(update, context):
             text=('У вас нет прав 😋'),
             reply_markup=button
             )
-
-
-def number_of_days(update, _):
-    query = update.callback_query
-    variant = query.data
-    query.answer()
-    query.edit_message_text(text=f"Выбранный вариант: {variant}")
 
 
 def get_start(update, context):
@@ -405,6 +441,7 @@ def main():
                                                   get_question))
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
+
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
                                                   get_statistics))
     updater.dispatcher.add_handler(MessageHandler(
@@ -414,7 +451,7 @@ def main():
                                                   get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(CommandHandler('author', get_author))
-    updater.dispatcher.add_handler(CallbackQueryHandler(number_of_days))
+    updater.dispatcher.add_handler(CallbackQueryHandler(get_statistics))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
     updater.start_webhook(listen="0.0.0.0",
