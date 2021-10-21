@@ -263,7 +263,6 @@ def get_statistics(update, context):
     query = update.callback_query
     answer = query.data
     query.answer()
-    print(answer)
     text = (f'статистика {answer}')
     st = text.split(' ')
     if 'txt' in st or 'тхт' in st:
@@ -454,9 +453,6 @@ def main():
                                                   get_question))
     updater.dispatcher.add_handler(MessageHandler(Filters.regex('Да-нет'),
                                                   get_question))
-
-    # updater.dispatcher.add_handler(MessageHandler(Filters.regex('Статистика'),
-    #                                               get_format))
     updater.dispatcher.add_handler(MessageHandler(
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных'), get_deck))
@@ -464,8 +460,6 @@ def main():
                                                   get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', get_help))
     updater.dispatcher.add_handler(CommandHandler('author', get_author))
-    # updater.dispatcher.add_handler(CallbackQueryHandler(get_statistics))
-
 
     conv_handler = ConversationHandler(
         entry_points=[MessageHandler(Filters.regex('Статистика'), get_format)],
@@ -480,7 +474,6 @@ def main():
         fallbacks=[CommandHandler('start', get_start)],
     )
     updater.dispatcher.add_handler(conv_handler)
-
 
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
