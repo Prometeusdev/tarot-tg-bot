@@ -235,7 +235,7 @@ def number_of_days(update, _):
     else:
         format = query.data
     query.answer()
-    keyboard2 = [
+    keyboard = [
         [
             InlineKeyboardButton('1', callback_data=f'1 {format}'),
             InlineKeyboardButton('2', callback_data=f'2 {format}'),
@@ -252,9 +252,9 @@ def number_of_days(update, _):
             InlineKeyboardButton('9', callback_data=f'9 {format}'),
         ]
     ]
-    reply_markup = InlineKeyboardMarkup(keyboard2)
-    update.message.reply_text('Выберите количество дней',
-                              reply_markup=reply_markup)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    query.edit_message_text('Выберите количество дней',
+                            reply_markup=reply_markup)
     return SECOND
 
 
