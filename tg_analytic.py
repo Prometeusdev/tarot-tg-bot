@@ -25,7 +25,7 @@ for days in range(5, 10000):
 
 # remove txt file
 def remove():
-    path = os.getcwd() + 'Статистика.txt'
+    path = os.getcwd() + '/Статистика.txt'
     os.remove(path)
 
 
