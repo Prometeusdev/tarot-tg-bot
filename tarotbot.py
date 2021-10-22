@@ -3,6 +3,7 @@ import logging
 import random
 import tg_analytic
 
+from flask import Flask
 from dotenv import load_dotenv
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
                       InlineKeyboardMarkup)
@@ -11,8 +12,11 @@ from telegram.ext import ConversationHandler
 from data.dictionaries import yes_no_dict, info_card_dict
 
 
+server = Flask(__name__)
+
 load_dotenv()
 admin_id = os.getenv('ID')
+secret_token = os.getenv('TOKEN')
 
 FIRST, SECOND = range(2)
 
@@ -40,6 +44,7 @@ def get_yes_or_no(update, context):
     return deck
 
 
+@server.route('/' + secret_token, methods=['POST'])
 def get_deck(update, context):
     text = update.effective_message.text
     chat = update.effective_chat
@@ -258,16 +263,22 @@ def get_statistics(update, context):
     query = update.callback_query
     answer = query.data
     query.answer()
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     text = (f'статистика {answer}')
     st = text.split(' ')
     if 'txt' in st or 'тхт' in st:
         tg_analytic.analysis(st)
         with open('Статистика.txt', 'r', encoding='UTF-8') as file:
-            context.bot.send_document(chat.id, file)
+            context.bot.send_document(chat.id, file, reply_markup=button)
             tg_analytic.remove()
     else:
         messages = tg_analytic.analysis(st)
-        context.bot.send_message(chat.id, messages)
+        context.bot.send_message(chat.id, messages, reply_markup=button)
     query.edit_message_text(text="Будет нужна ещё статистика, пиши!")
     return ConversationHandler.END
 
@@ -308,8 +319,12 @@ def another_words(update, context):
     text = update.effective_message.text.lower()
     chat = update.effective_chat
     name = update.message.chat.first_name
-    button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
-                                 resize_keyboard=True)
+    if str(chat.id) == admin_id:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
+                                     resize_keyboard=True)
+    else:
+        button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
+                                     resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'дай карту']
     list_yes_no = ['вопрос', 'да', 'нет', 'да-нет']
     list_help = ['помощь', 'help', 'хелп']
@@ -344,7 +359,8 @@ def another_words(update, context):
         ]
         context.bot.send_sticker(
             chat.id,
-            list_thanks_sticker[random.randint(0, len(list_thanks_sticker)-1)]
+            list_thanks_sticker[random.randint(0, len(list_thanks_sticker)-1)],
+            reply_markup=button
             )
     elif [word for word in list_hi if word in text]:
         list_hi_answer = [
@@ -418,7 +434,8 @@ def another_words(update, context):
             context.bot.send_sticker(
                 chat.id,
                 ('CAACAgIAAxkBAAEDHFxhbmwRWLa1ZySyHOeDfUFfcM4VQwACIQEAAvcCyA9E'
-                 '9UdZozFIriEE'))
+                 '9UdZozFIriEE'),
+                reply_markup=button)
         else:
             if chat.type == 'private':
                 context.bot.send_message(
