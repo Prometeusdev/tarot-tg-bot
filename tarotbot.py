@@ -23,7 +23,7 @@ admin_id = os.getenv('ID')
 APP_NAME = os.getenv('APP_NAME')
 
 global bot
-bot = Bot(token=TOKEN)
+bot = Bot(token=secret_token)
 
 FIRST, SECOND = range(2)
 
