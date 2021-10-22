@@ -66,4 +66,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    server.run()
+    server.run(listen="0.0.0.0", port=int(os.environ.get('PORT', 5000)),)
