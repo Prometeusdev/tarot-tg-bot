@@ -1,1 +1,1 @@
-web: python tarotbot.py
+web: python run_server.py
