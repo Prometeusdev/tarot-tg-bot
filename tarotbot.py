@@ -330,13 +330,13 @@ def another_words(update, context):
                          'запись на консультацию', 'консультация']
     list_hi = ['привет', 'здравствуй', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как настроение', 'как поживаешь', 'как жизнь']
+    sl = slice(0,-1)
+    print(text[sl])
     if text in list_yes_no:
         get_question(update, context)
     elif text in list_card:
         deck_selection(update, context)
-    elif (text[-1] == '?' and
-          [word for word in not list_how if word in text] and
-          [word for word in not list_to_do if word in text]):
+    elif text[-1] == '?' and text[sl] in list_to_do and text[sl] in list_how:
         get_yes_or_no(update, context)
     elif text in list_help:
         get_help(update, context)
