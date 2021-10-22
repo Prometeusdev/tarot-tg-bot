@@ -1,1 +1,1 @@
-web: python tarotbot.py
+web: gunicorn run_server:server

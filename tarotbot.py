@@ -2,6 +2,7 @@ import os
 import logging
 import random
 import tg_analytic
+import flask
 
 from dotenv import load_dotenv
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
@@ -12,12 +13,15 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler,
 from data.dictionaries import yes_no_dict, info_card_dict
 
 
+server = flask.Flask(__name__)
+
 load_dotenv()
 
-PORT = int(os.environ.get('PORT', 80))
+PORT = int(os.environ.get('PORT', 5000))
 
 secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
+APP_NAME = os.getenv('APP_NAME')
 
 FIRST, SECOND = range(2)
 
@@ -441,6 +445,26 @@ def another_words(update, context):
                     )
 
 
+@server.route('/' + secret_token, methods=['POST'])
+def get_message():
+    updater = Updater(token=secret_token)
+    updater.bot.process_new_updates([updater.bot.de_json(
+         flask.request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+ 
+@server.route('/', methods=["GET"])
+def index():
+    updater = Updater(token=secret_token)
+    url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=secret_token,
+                          webhook_url=url)
+    updater.bot.setWebhook(url=url)
+    return "Hello from Heroku!", 200
+
+
 def main():
     updater = Updater(token=secret_token)
 
@@ -474,17 +498,16 @@ def main():
         fallbacks=[CommandHandler('start', get_start)],
     )
     updater.dispatcher.add_handler(conv_handler)
-
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
 
+    # url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=secret_token,
                           webhook_url=('https://tarot-helen-bot.herokuapp.com/'
                                        + secret_token))
-    # updater.start_polling()
-    updater.idle()
+    # updater.idle()
 
 
 if __name__ == '__main__':
-    main()
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
