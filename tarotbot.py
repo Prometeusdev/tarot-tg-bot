@@ -3,7 +3,6 @@ import logging
 import random
 import tg_analytic
 
-from flask import Flask
 from dotenv import load_dotenv
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
                       InlineKeyboardMarkup)
@@ -12,11 +11,8 @@ from telegram.ext import ConversationHandler
 from data.dictionaries import yes_no_dict, info_card_dict
 
 
-server = Flask(__name__)
-
 load_dotenv()
 admin_id = os.getenv('ID')
-secret_token = os.getenv('TOKEN')
 
 FIRST, SECOND = range(2)
 
@@ -44,7 +40,6 @@ def get_yes_or_no(update, context):
     return deck
 
 
-@server.route('/' + secret_token, methods=['POST'])
 def get_deck(update, context):
     text = update.effective_message.text
     chat = update.effective_chat
