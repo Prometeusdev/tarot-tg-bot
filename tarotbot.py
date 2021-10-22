@@ -322,6 +322,7 @@ def another_words(update, context):
                                      resize_keyboard=True)
     list_card = ['выбрать колоду', 'колода', 'дай карту']
     list_yes_no = ['вопрос', 'да', 'нет', 'да-нет']
+    list_to_do = ['что делаешь', 'чем занимаешься']
     list_help = ['помощь', 'help', 'хелп']
     list_author = ['автор', 'разработчик', 'админ']
     list_thanks = ['спасибо', 'благодарю', 'благодарствую', 'thank']
@@ -333,7 +334,8 @@ def another_words(update, context):
         get_question(update, context)
     elif text in list_card:
         deck_selection(update, context)
-    elif text[-1] == '?':
+    elif (text[-1] == '?' or [word for word in list_how if word not in text] or
+          [word for word in list_to_do if word not in text]):
         get_yes_or_no(update, context)
     elif text in list_help:
         get_help(update, context)
@@ -398,12 +400,19 @@ def another_words(update, context):
             text=list_answer[random.randint(0, len(list_answer)-1)],
             reply_markup=button
             )
-    elif text == 'таролог':
+    elif text == 'таролог' or text == 'мама':
         context.bot.send_message(
             chat_id=chat.id,
             text='Елена Логинова, https://www.instagram.com/hellyloginson/\n'
                  'ТАРО ✳️ Предсказания, полезные советы.\n'
                  'Отвечу на ваши вопросы @Lenoktaro',
+            reply_markup=button
+            )
+    elif [word for word in list_to_do if word in text]:
+        context.bot.send_message(
+            chat_id=chat.id,
+            text=('Отправляю Вам карту дня с кратким описанием, так же '
+                  'отвечаю \"да-нет\" на Ваше желание'),
             reply_markup=button
             )
     elif text[:10] == 'статистика':
