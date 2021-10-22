@@ -499,16 +499,14 @@ def main():
     )
     updater.dispatcher.add_handler(conv_handler)
     updater.dispatcher.add_handler(MessageHandler(Filters.text, another_words))
-
-    # url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=secret_token,
                           webhook_url=('https://tarot-helen-bot.herokuapp.com/'
                                        + secret_token))
-    server.run(host='0.0.0.0', port=int(PORT))
     # updater.idle()
 
 
 if __name__ == '__main__':
     main()
+    server.run(host='0.0.0.0', port=int(PORT))
