@@ -2,26 +2,28 @@ import os
 import logging
 import random
 import tg_analytic
-import flask
 
 from dotenv import load_dotenv
+from flask import Flask, request
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
-                      InlineKeyboardMarkup)
+                      InlineKeyboardMarkup, Update, Bot)
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           CallbackQueryHandler, Filters, ConversationHandler)
 
 from data.dictionaries import yes_no_dict, info_card_dict
 
 
-server = flask.Flask(__name__)
+server = Flask(__name__)
 
 load_dotenv()
 
 PORT = int(os.environ.get('PORT', 5000))
-
 secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
 APP_NAME = os.getenv('APP_NAME')
+
+global bot
+bot = Bot(token=TOKEN)
 
 FIRST, SECOND = range(2)
 
@@ -447,10 +449,12 @@ def another_words(update, context):
 
 @server.route('/' + secret_token, methods=['POST'])
 def get_message():
-    updater = Updater(token=secret_token)
-    updater.bot.process_new_updates([updater.bot.de_json(
-         flask.request.stream.read().decode("utf-8"))])
-    return "!", 200
+    if request.method == "POST":
+        update = Update.de_json(request.get_json(force=True))
+        chat_id = update.message.chat.id
+        text = update.message.text.encode('utf-8')
+        bot.sendMessage(chat_id=chat_id, text=text)
+    return 'ok'
 
  
 @server.route('/', methods=["GET"])
@@ -501,7 +505,7 @@ def main():
                           url_path=secret_token,
                           webhook_url=('https://tarot-helen-bot.herokuapp.com/'
                                        + secret_token))
-    # updater.idle()
+    updater.idle()
 
 
 if __name__ == '__main__':
