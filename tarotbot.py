@@ -445,24 +445,24 @@ def another_words(update, context):
                     )
 
 
-@server.route('/' + secret_token, methods=['POST'])
-def get_message():
-    updater = Updater(token=secret_token)
-    updater.bot.process_new_updates([updater.bot.de_json(
-         flask.request.stream.read().decode("utf-8"))])
-    return "!", 200
+# @server.route('/' + secret_token, methods=['POST'])
+# def get_message():
+#     updater = Updater(token=secret_token)
+#     updater.bot.process_new_updates([updater.bot.de_json(
+#          flask.request.stream.read().decode("utf-8"))])
+#     return "!", 200
 
  
-@server.route('/', methods=["GET"])
-def index():
-    updater = Updater(token=secret_token)
-    url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=secret_token,
-                          webhook_url=url)
-    updater.bot.setWebhook(url=url)
-    return "Hello from Heroku!", 200
+# @server.route('/', methods=["GET"])
+# def index():
+#     updater = Updater(token=secret_token)
+#     url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
+#     updater.start_webhook(listen="0.0.0.0",
+#                           port=int(PORT),
+#                           url_path=secret_token,
+#                           webhook_url=url)
+#     updater.bot.setWebhook(url=url)
+#     return "Hello from Heroku!", 200
 
 
 def main():
@@ -509,5 +509,5 @@ def main():
     # updater.idle()
 
 
-if __name__ == '__main__':
-    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+# if __name__ == '__main__':
+#     main()
