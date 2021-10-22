@@ -1,7 +1,4 @@
 import os
-import logging
-import random
-import tg_analytic
 
 from dotenv import load_dotenv
 from flask import Flask, request
@@ -15,7 +12,7 @@ server = Flask(__name__)
 
 load_dotenv()
 
-PORT = int(os.environ.get('PORT', 5000))
+PORT = int(os.environ.get('PORT', 80))
 secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
 APP_NAME = os.getenv('APP_NAME')
