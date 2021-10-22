@@ -454,13 +454,10 @@ def get_message():
 
  
 @server.route('/', methods=["GET"])
-def index():
+def webhook():
     updater = Updater(token=secret_token)
+    updater.bot.remove_webhook()
     url = "https://{}.herokuapp.com/{}".format(APP_NAME, secret_token)
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=secret_token,
-                          webhook_url=url)
     updater.bot.setWebhook(url=url)
     return "Hello from Heroku!", 200
 
@@ -509,4 +506,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    server.run(host='0.0.0.0', port=int(PORT))
+    server.run(host='0.0.0.0', port=PORT)
