@@ -334,8 +334,9 @@ def another_words(update, context):
         get_question(update, context)
     elif text in list_card:
         deck_selection(update, context)
-    elif (text[-1] == '?' or [word for word in list_how if word not in text] or
-          [word for word in list_to_do if word not in text]):
+    elif (text[-1] == '?' or
+          [word for word in not list_how if word in text] or
+          [word for word in not list_to_do if word in text]):
         get_yes_or_no(update, context)
     elif text in list_help:
         get_help(update, context)
