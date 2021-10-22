@@ -32,8 +32,7 @@ def get_message():
     return 'ok'
 
 
-@server.route('/setwebhook', methods=['GET', 'POST'])
-def set_webhook():
+def main():
     updater = Updater(token=secret_token)
 
     updater.dispatcher.add_handler(CommandHandler('start', tarotbot.get_start))
@@ -80,8 +79,9 @@ def set_webhook():
 
 @server.route('/')
 def index():
-    return '.'
+    return 'Hello from Heroku'
 
 
 if __name__ == '__main__':
+    main()
     server.run(threaded=True)
