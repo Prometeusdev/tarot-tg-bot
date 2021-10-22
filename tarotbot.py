@@ -7,8 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, request
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
                       InlineKeyboardMarkup, Update, Bot)
-from telegram.ext import (Updater, CommandHandler, MessageHandler,
-                          CallbackQueryHandler, Filters, ConversationHandler)
+from telegram.ext import ConversationHandler
 
 from data.dictionaries import yes_no_dict, info_card_dict
 
@@ -457,6 +456,8 @@ def get_message():
     return 'ok'
 
  
-@server.route('/', methods=["GET"])
+@server.route('/1/', methods=["GET"])
 def webhook():
+    # bot.set_webhook(url="https://{}.herokuapp.com/{}".format(APP_NAME,
+    #                                                          secret_token))
     return "Hello from Heroku!"
