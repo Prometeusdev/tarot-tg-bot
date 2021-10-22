@@ -4,7 +4,6 @@ import random
 import tg_analytic
 
 from dotenv import load_dotenv
-from flask import Flask, request
 from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
                       InlineKeyboardMarkup)
 from telegram.ext import ConversationHandler
@@ -12,14 +11,8 @@ from telegram.ext import ConversationHandler
 from data.dictionaries import yes_no_dict, info_card_dict
 
 
-server = Flask(__name__)
-
 load_dotenv()
-
-PORT = int(os.environ.get('PORT', 5000))
-secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
-APP_NAME = os.getenv('APP_NAME')
 
 FIRST, SECOND = range(2)
 
