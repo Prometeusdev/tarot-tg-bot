@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, request
+from telegram import Update, Bot
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           CallbackQueryHandler, Filters, ConversationHandler)
 
@@ -17,9 +18,22 @@ secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
 APP_NAME = os.getenv('APP_NAME')
 
+global bot
+bot = Bot(token=secret_token)
 
 
-def main():
+@server.route('/' + secret_token, methods=['POST'])
+def get_message():
+    if request.method == "POST":
+        update = Update.de_json(request.get_json(force=True))
+        chat_id = update.message.chat.id
+        text = update.message.text.encode('utf-8')
+        bot.sendMessage(chat_id=chat_id, text=text)
+    return 'ok'
+
+
+@server.route('/setwebhook', methods=['GET', 'POST'])
+def set_webhook():
     updater = Updater(token=secret_token)
 
     updater.dispatcher.add_handler(CommandHandler('start', tarotbot.get_start))
@@ -64,6 +78,10 @@ def main():
     updater.idle()
 
 
+@server.route('/')
+def index():
+    return '.'
+
+
 if __name__ == '__main__':
-    main()
-    server.run(listen="0.0.0.0", port=int(os.environ.get('PORT', 5000)),)
+    server.run(threaded=True)
