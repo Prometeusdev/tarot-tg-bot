@@ -4,8 +4,10 @@ import random
 import tg_analytic
 
 from dotenv import load_dotenv
-from telegram import (ReplyKeyboardMarkup, InlineKeyboardButton,
-                      InlineKeyboardMarkup)
+from telegram import (
+    ReplyKeyboardMarkup,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup)
 from telegram.ext import ConversationHandler
 
 from data.dictionaries import yes_no_dict, info_card_dict
@@ -40,6 +42,22 @@ def get_yes_or_no(update, context):
     return deck
 
 
+def get_question(update, context):
+    chat = update.effective_chat
+    text = update.effective_message.text
+    possible_commands = ['/yes_or_no', 'вопрос', 'да', 'нет', 'да-нет']
+    if text.lower() in possible_commands:
+        text = 'Запрос Да-нет'
+    tg_analytic.statistics(chat.id, text)
+    button = ReplyKeyboardMarkup([['Сбудется ли моё желание?']],
+                                 resize_keyboard=True)
+    context.bot.send_message(
+        chat_id=chat.id,
+        text=('Задайте вопрос со знаком вопроса в конце предложения, или '
+              'мысленно загадайте своё желание и воспользуйтесь кнопкой'),
+        reply_markup=button)
+
+
 def get_deck(update, context):
     text = update.effective_message.text
     chat = update.effective_chat
@@ -72,27 +90,11 @@ def get_deck(update, context):
     return deck
 
 
-def get_question(update, context):
-    chat = update.effective_chat
-    text = update.effective_message.text
-    possible_commands = ['/yes_or_no', 'вопрос', 'да', 'нет', 'да-нет']
-    if text.lower() in possible_commands:
-        text = 'Запрос Да-нет'
-    tg_analytic.statistics(chat.id, text)
-    button = ReplyKeyboardMarkup([['Сбудется ли моё желание?']],
-                                 resize_keyboard=True)
-    context.bot.send_message(
-        chat_id=chat.id,
-        text=('Задайте вопрос со знаком вопроса в конце предложения, или '
-              'мысленно загадайте своё желание и воспользуйтесь кнопкой'),
-        reply_markup=button)
-
-
 def deck_selection(update, context):
     chat = update.effective_chat
     text = update.effective_message.text
     possible_commands = ['/card_of_the_day', 'выбрать колоду', 'колода',
-                         'дай карту']
+                         'дай карту', 'карта дня']
     if text.lower() in possible_commands:
         text = 'Запрос карты дня'
     tg_analytic.statistics(chat.id, text)
@@ -330,13 +332,13 @@ def another_words(update, context):
                          'запись на консультацию', 'консультация']
     list_hi = ['привет', 'здравствуй', 'хай', 'хелло', '👋']
     list_how = ['как дела', 'как настроение', 'как поживаешь', 'как жизнь']
-    sl = slice(0,-1)
+    sl = slice(0, -1)
     if text in list_yes_no:
         get_question(update, context)
     elif text in list_card:
         deck_selection(update, context)
     elif (text[-1] == '?' and text[sl] not in list_to_do and
-         text[sl] not in list_how):
+          text[sl] not in list_how):
         get_yes_or_no(update, context)
     elif text in list_help:
         get_help(update, context)

@@ -77,7 +77,7 @@ def analysis(bid):
     if 'пользователи' in bid:
         message_to_user += 'За всё время бота использовало: ' + '%s' % number_of_users \
                    + ' %s ' % users_type.get(number_of_users, 'пользователей') + '\n' \
-                                                                                 'Пользователей за последние %s %s: \n' % (
+                                                                                 '\033[4m' + 'Пользователей за последние %s %s: \n' % (
                        season, day_type.get(season, day_type[season]))
         for days, number, comm_day in zip(
             list_of_dates_in_df_user,
@@ -85,9 +85,7 @@ def analysis(bid):
             commands_in_each_day):
             message_to_user += 'Дата: %s Количество: %d. Из них новых: %s\n\n' % (days, number, comm_day.get('/start', 0))
     if 'команды' in bid:
-        message_to_user += 'Статистика команд за последние %s %s: \n' % (
-            season,
-            day_type.get(season, day_type[season]))
+        message_to_user += '\033[4m' + 'Статистика команд за последние %s %s: \n' % (season, day_type.get(season, day_type[season]))
         for days, commands in zip(
             list_of_dates_in_df_user,
             commands_in_each_day):

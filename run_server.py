@@ -1,35 +1,41 @@
 import os
 
+# from flask import Flask, request
+# from telegram import Update, Bot
 from dotenv import load_dotenv
-from flask import Flask, request
-from telegram import Update, Bot
 from telegram.ext import (Updater, CommandHandler, MessageHandler,
                           CallbackQueryHandler, Filters, ConversationHandler)
 
 import tarotbot
 
 
-server = Flask(__name__)
-
 load_dotenv()
 
 PORT = int(os.environ.get('PORT', 80))
 secret_token = os.getenv('TOKEN')
 admin_id = os.getenv('ID')
-APP_NAME = os.getenv('APP_NAME')
 
-global bot
-bot = Bot(token=secret_token)
+# APP_NAME = os.getenv('APP_NAME')
+
+# server = Flask(__name__)
+
+# global bot
+# bot = Bot(token=secret_token)
 
 
-@server.route('/' + secret_token, methods=['POST'])
-def get_message():
-    if request.method == "POST":
-        update = Update.de_json(request.get_json(force=True))
-        chat_id = update.message.chat.id
-        text = update.message.text.encode('utf-8')
-        bot.sendMessage(chat_id=chat_id, text=text)
-    return 'ok'
+# @server.route('/' + secret_token, methods=['POST'])
+# def get_message():
+#     if request.method == "POST":
+#         update = Update.de_json(request.get_json(force=True))
+#         chat_id = update.message.chat.id
+#         text = update.message.text.encode('utf-8')
+#         bot.sendMessage(chat_id=chat_id, text=text)
+#     return 'ok'
+
+
+# @server.route('/')
+# def index():
+#     return 'Hello from Heroku'
 
 
 def main():
@@ -77,11 +83,6 @@ def main():
     updater.idle()
 
 
-@server.route('/')
-def index():
-    return 'Hello from Heroku'
-
-
 if __name__ == '__main__':
     main()
-    server.run(threaded=True)
+    # server.run(threaded=True)
