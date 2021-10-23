@@ -73,7 +73,7 @@ def get_deck(update, context):
     else:
         button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                      resize_keyboard=True)
-    tg_analytic.statistics(chat.id, text = 'Колода ' + text)
+    tg_analytic.statistics(chat.id, text = f'Колода {deck}')
     number_card = get_new_image(deck)
     answer = info_card_dict[number_card[0]]
     if chat.type == 'private':
