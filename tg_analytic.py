@@ -47,13 +47,13 @@ def analysis(bid):
     message_to_user = 'Статистика использования бота за %s %s: \n' % (
         season,
         day_type.get(season, day_type[season]))
-    message_to_user += 'Всего статистика собрана за %s %s: \n' % (
+    message_to_user += 'Всего статистика собрана за %s %s: \n\n' % (
         number_of_days,
         day_type.get(season, day_type[season]))
     if season > number_of_days:
         season = number_of_days
         message_to_user += 'Указанное вами количество дней больше, чем имеется\n' \
-                           'Будет выведена статистика за максимальное возможное время\n'
+                           'Будет выведена статистика за максимальное возможное время\n\n'
 
     df_user = df.groupby(['data', 'id']).count().reset_index().groupby('data').count().reset_index()
     list_of_dates_in_df_user = list(df_user['data'])
