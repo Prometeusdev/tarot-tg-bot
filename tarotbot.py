@@ -73,6 +73,7 @@ def get_deck(update, context):
     else:
         button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет']],
                                      resize_keyboard=True)
+    tg_analytic.statistics(chat.id, text = 'Колода ' + text)
     number_card = get_new_image(deck)
     answer = info_card_dict[number_card[0]]
     if chat.type == 'private':
@@ -178,8 +179,8 @@ def get_help(update, context):
     text = update.effective_message.text
     possible_commands = ['/help', 'помощь', 'help', 'хелп']
     if text.lower() in possible_commands:
-        text = 'Запрос полного расклада'
-    tg_analytic.statistics(chat.id, text)
+        text = 'Запрос help'
+        tg_analytic.statistics(chat.id, text)
     if str(chat.id) == admin_id:
         button = ReplyKeyboardMarkup([['Карта дня', 'Да-нет'], ['Статистика']],
                                      resize_keyboard=True)
