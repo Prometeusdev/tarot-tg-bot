@@ -24,5 +24,8 @@
 Интегрирована статистика бота с помощью модуля [tg_analytic](https://github.com/aleksspevak/tg_analytic)
 
 Задеплоен на сервере [Heroku](https://heroku.com/)
+
+Мониторинг доступности [UptimeRobot](https://uptimerobot.com/)
+
 ### Автор
 - [Логинов Владимир](https://github.com/rume73)
