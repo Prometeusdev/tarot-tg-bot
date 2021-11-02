@@ -23,7 +23,8 @@ s3 = boto3.resource(
 )
 
 s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
-data = s3_object.get()
+data = s3_object['Body'].read().split(b'\n')
+csv_data = csv.DictReader(data)
 
 
 users_type = {
@@ -52,7 +53,7 @@ def remove():
 # write data to csv
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
-    with open(data, 'a', newline="", encoding='UTF-8') as fil:
+    with open(csv_data, 'a', newline="", encoding='UTF-8') as fil:
         print(fil)
         wr = csv.writer(fil, delimiter=';')
         wr.writerow([data, user_id, command])
@@ -61,7 +62,7 @@ def statistics(user_id, command):
 # make report
 def analysis(bid):
     season = int(bid[1])
-    df = pd.read_csv(data, delimiter=';', encoding='utf8')
+    df = pd.read_csv(csv_data, delimiter=';', encoding='utf8')
     print(df)
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
