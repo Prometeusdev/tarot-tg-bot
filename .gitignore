@@ -136,3 +136,6 @@ dmypy.json
 
 # .idea
 .idea
+
+#other
+s3 copy.py

@@ -3,18 +3,29 @@
 
 import boto3
 import csv
+import codecs
 import datetime
 import os
 import pandas as pd
 
+from dotenv import load_dotenv
 
+
+load_dotenv()
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_URL = os.getenv('AWS_URL')
 KEY_FILE = 'data.csv'
 
-# s3 = boto3.client('s3')
+# s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
+#                   aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+
+# data = s3.get_object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
+
+# for row in csv.DictReader(codecs.getreader("utf-8")(data["Body"])):
+#     print(row[1])
+
 s3 = boto3.resource(
     service_name='s3',
     region_name='eu-north-1',
@@ -53,7 +64,7 @@ def remove():
 # write data to csv
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
-    with open(csv_data, 'a', newline="", encoding='UTF-8') as fil:
+    with open(data, 'a', newline="", encoding='UTF-8') as fil:
         print(fil)
         wr = csv.writer(fil, delimiter=';')
         wr.writerow([data, user_id, command])
@@ -62,7 +73,7 @@ def statistics(user_id, command):
 # make report
 def analysis(bid):
     season = int(bid[1])
-    df = pd.read_csv(csv_data, delimiter=';', encoding='utf8')
+    df = pd.read_csv(data, delimiter=';', encoding='utf8')
     print(df)
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
