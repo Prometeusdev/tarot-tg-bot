@@ -21,9 +21,9 @@ s3 = boto3.resource(
     aws_access_key_id=AWS_ACCESS_KEY_ID,
     aws_secret_access_key=AWS_SECRET_ACCESS_KEY
 )
+s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
 
-s3_object = s3.get_object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
-data = s3_object['Body'].read().split(b'\n')
+data = s3_object.get()['Body'].read().split(b'\n')
 csv_data = csv.DictReader(data)
 
 
