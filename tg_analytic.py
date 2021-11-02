@@ -50,13 +50,15 @@ def remove():
 # write data to csv on AWS S3
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
-
+    print(user_id)
+    print(command)
     s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
     data_csv = s3_object.get()['Body']
 
     df = pd.read_csv(data_csv, delimiter=';', encoding='utf8')
     new_row = {'data':data, 'id':user_id, 'command':command}
     df = df.append(new_row, ignore_index=True)
+    print(df)
     s3.Object(AWS_STORAGE_BUCKET_NAME, 'data.csv').put(Body=df.to_csv(),
                                                        ACL='public-read')
 
