@@ -1,21 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import boto3
 import csv
 import datetime
 import os
 import pandas as pd
 
-
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_URL = os.getenv('AWS_URL')
-
-s3 = boto3.client('s3', AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-
-AWS_DATA_URL = "https://{}.{}/".format(AWS_STORAGE_BUCKET_NAME, AWS_URL)
 
 users_type = {
     1: 'пользователь',
@@ -43,8 +33,7 @@ def remove():
 # write data to csv
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
-    with open(AWS_DATA_URL, 'a', newline="", encoding='UTF-8') as fil:
-        print(fil)
+    with open('data/data.csv', 'a', newline="", encoding='UTF-8') as fil:
         wr = csv.writer(fil, delimiter=';')
         wr.writerow([data, user_id, command])
 
@@ -52,8 +41,7 @@ def statistics(user_id, command):
 # make report
 def analysis(bid):
     season = int(bid[1])
-    df = pd.read_csv(AWS_DATA_URL, delimiter=';', encoding='utf8')
-    print(df)
+    df = pd.read_csv('data/data.csv', delimiter=';', encoding='utf8')
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
 
