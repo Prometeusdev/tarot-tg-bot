@@ -18,14 +18,6 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_URL = os.getenv('AWS_URL')
 KEY_FILE = 'data.csv'
 
-# s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID,
-#                   aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-
-# data = s3.get_object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
-
-# for row in csv.DictReader(codecs.getreader("utf-8")(data["Body"])):
-#     print(row[1])
-
 s3 = boto3.resource(
     service_name='s3',
     region_name='eu-north-1',
@@ -33,10 +25,7 @@ s3 = boto3.resource(
     aws_secret_access_key=AWS_SECRET_ACCESS_KEY
 )
 s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
-
-data = s3_object.get()['Body'].read().split(b'\n')
-csv_data = csv.DictReader(data)
-
+data = s3_object.get()['Body']
 
 users_type = {
     1: 'пользователь',
@@ -65,7 +54,6 @@ def remove():
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
     with open(data, 'a', newline="", encoding='UTF-8') as fil:
-        print(fil)
         wr = csv.writer(fil, delimiter=';')
         wr.writerow([data, user_id, command])
 
@@ -74,7 +62,6 @@ def statistics(user_id, command):
 def analysis(bid):
     season = int(bid[1])
     df = pd.read_csv(data, delimiter=';', encoding='utf8')
-    print(df)
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
 
