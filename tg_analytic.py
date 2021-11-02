@@ -12,7 +12,7 @@ AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_URL = os.getenv('AWS_URL')
-
+KEY_FILE = 'data.csv'
 
 # s3 = boto3.client('s3')
 s3 = boto3.resource(
@@ -22,7 +22,8 @@ s3 = boto3.resource(
     aws_secret_access_key=AWS_SECRET_ACCESS_KEY
 )
 
-data = s3.get_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key='data.csv')
+s3_object = s3.Object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=KEY_FILE)
+data = s3_object.get()
 
 
 users_type = {
