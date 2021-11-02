@@ -23,6 +23,8 @@
 
 Интегрирована статистика бота с помощью модуля [tg_analytic](https://github.com/aleksspevak/tg_analytic)
 
+Хранение data_csv (статистика) [AWS S3](https://aws.amazon.com/ru/s3/)
+
 Задеплоен на сервере [Heroku](https://heroku.com/)
 
 Мониторинг доступности [UptimeRobot](https://uptimerobot.com/)

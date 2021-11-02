@@ -3,7 +3,6 @@
 
 import boto3
 import csv
-import codecs
 import datetime
 import os
 import pandas as pd
@@ -15,17 +14,15 @@ load_dotenv()
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-AWS_URL = os.getenv('AWS_URL')
+AWS_REGION_NAME = os.getenv('AWS_REGION_NAME')
 KEY_FILE = 'data.csv'
 
 s3 = boto3.resource(
     service_name='s3',
-    region_name='eu-north-1',
+    region_name=AWS_REGION_NAME,
     aws_access_key_id=AWS_ACCESS_KEY_ID,
     aws_secret_access_key=AWS_SECRET_ACCESS_KEY
 )
-s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
-data = s3_object.get()['Body']
 
 users_type = {
     1: 'пользователь',
@@ -50,18 +47,26 @@ def remove():
     os.remove(path)
 
 
-# write data to csv
+# write data to csv on AWS S3
 def statistics(user_id, command):
     data = datetime.datetime.today().strftime("%Y-%m-%d")
-    with open(data, 'a', newline="", encoding='UTF-8') as fil:
-        wr = csv.writer(fil, delimiter=';')
-        wr.writerow([data, user_id, command])
+
+    s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
+    data_csv = s3_object.get()['Body']
+
+    df = pd.read_csv(data_csv, delimiter=';', encoding='utf8')
+    new_row = {'data':data, 'id':user_id, 'command':command}
+    df = df.append(new_row, ignore_index=True)
+    s3.Object(AWS_STORAGE_BUCKET_NAME, 'data.csv').put(Body=df.to_csv(),
+                                                       ACL='public-read')
 
 
 # make report
 def analysis(bid):
     season = int(bid[1])
-    df = pd.read_csv(data, delimiter=';', encoding='utf8')
+    s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
+    data_csv = s3_object.get()['Body']
+    df = pd.read_csv(data_csv, delimiter=';', encoding='utf8')
     number_of_users = len(df['id'].unique())
     number_of_days = len(df['data'].unique())
 
