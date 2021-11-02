@@ -28,8 +28,8 @@ s3_object = s3.Object(AWS_STORAGE_BUCKET_NAME, KEY_FILE)
 
 data_csv = s3_object.get()['Body']
 data = datetime.datetime.today().strftime("%Y-%m-%d")
-df = pd.read_csv(data_csv, delimiter=';', encoding='utf8')
-
+df = pd.read_csv(data_csv, index_col=0, encoding='utf8')
+print(df)
 new_row = {'data':data, 'id':1, 'command':'f'}
 df = df.append(new_row, ignore_index=True)
 
