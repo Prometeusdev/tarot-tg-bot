@@ -30,7 +30,7 @@ def main():
         Filters.regex('Таро Уэйта') |
         Filters.regex('Таро Божественных Животных') |
         Filters.regex('Таро Белых Кошек') |
-        Filters.regex('Таро Светлого Провидца'), tarotbot.get_deck))
+        Filters.regex('Таро Cветлого Провидца'), tarotbot.get_deck))
     updater.dispatcher.add_handler(CommandHandler('tarot_layout',
                                                   tarotbot.get_tarot_layout))
     updater.dispatcher.add_handler(CommandHandler('help', tarotbot.get_help))
