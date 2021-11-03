@@ -27,8 +27,8 @@ def get_main_buttons(update, context):
     chat = update.effective_chat
     if str(chat.id) == admin_id:
         return ReplyKeyboardMarkup([['Карта дня', 'Да-нет'],
-                                    ['Полный расклад'],
-                                    ['Статистика']], resize_keyboard=True)
+                                    ['Полный расклад', 'Статистика']],
+                                   resize_keyboard=True)
     else:
         return ReplyKeyboardMarkup([['Карта дня', 'Да-нет'],
                                     ['Полный расклад']], resize_keyboard=True)
@@ -110,7 +110,7 @@ def deck_selection(update, context):
     tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([
         ['Таро Уэйта', 'Таро Божественных Животных'],
-        ['Таро Белых Кошек', 'Таро Светлого Провидца']
+        ['Таро Белых Кошек', 'Таро Cветлого Провидца']
         ],
         resize_keyboard=True)
     context.bot.send_message(
@@ -121,7 +121,6 @@ def deck_selection(update, context):
 
 def get_new_image(deck):
     random_number = random.randint(0, 77)
-    deck = deck
     try:
         random_card = open(f'/app/media/images/{deck}/{random_number}.jpg',
                            'rb')
