@@ -28,12 +28,10 @@ def get_main_buttons(update, context):
     if str(chat.id) == admin_id:
         return ReplyKeyboardMarkup([['Карта дня', 'Да-нет'],
                                     ['Полный расклад'],
-                                    ['Статистика']],
-                                     resize_keyboard=True)
+                                    ['Статистика']], resize_keyboard=True)
     else:
         return ReplyKeyboardMarkup([['Карта дня', 'Да-нет'],
-                                    ['Полный расклад']],
-                                     resize_keyboard=True)
+                                    ['Полный расклад']], resize_keyboard=True)
 
 
 def get_yes_or_no(update, context):
@@ -76,7 +74,14 @@ def get_deck(update, context):
         logging.error(f'Такой колоды не существует: {error}')
         deck = 'Таро Уэйта'
     button = get_main_buttons(update, context)
-    text = 'Колода ' + deck
+    if deck == 'Таро Уэйта':
+        text = 'Колода ' + deck
+    elif deck == 'Таро Божественных Животных':
+        text = 'Колода Животных'
+    elif deck == 'Таро Белых Кошек':
+        text = 'Колода Кошек'
+    elif deck == 'Таро Светлого Провидца':
+        text = 'Колода Провидца'
     tg_analytic.statistics(chat.id, text)
     number_card = get_new_image(deck)
     answer = info_card_dict[number_card[0]]
@@ -104,7 +109,8 @@ def deck_selection(update, context):
         text = 'Запрос карты дня'
     tg_analytic.statistics(chat.id, text)
     button = ReplyKeyboardMarkup([
-        ['Таро Уэйта', 'Таро Божественных Животных']
+        ['Таро Уэйта', 'Таро Божественных Животных'],
+        ['Таро Белых Кошек', 'Таро Светлого Провидца']
         ],
         resize_keyboard=True)
     context.bot.send_message(
