@@ -80,7 +80,7 @@ def get_deck(update, context):
         text = 'Колода Животных'
     elif deck == 'Таро Белых Кошек':
         text = 'Колода Кошек'
-    elif deck == 'Таро Светлого Провидца':
+    elif deck == 'Таро Cветлого Провидца':
         text = 'Колода Провидца'
     tg_analytic.statistics(chat.id, text)
     number_card = get_new_image(deck)
