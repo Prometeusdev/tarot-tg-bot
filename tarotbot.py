@@ -89,7 +89,7 @@ def get_deck(update, context):
         context.bot.send_photo(
             chat.id,
             number_card[1],
-            caption=f'{name}, Ваша карта дня!\n{answer}',
+            caption=f'{name}, Ваша карта дня - {answer}',
             reply_markup=button)
     else:
         context.bot.send_photo(
