@@ -121,7 +121,7 @@ def analysis(bid):
                 if i in commands:
                     message_to_user += '[%s] - %s раз\n' % (i, commands.get(i))
                 else:
-                    message_to_user += '[%s] - 0 раз\n' % i
+                    pass
 
     if 'txt' in bid or 'тхт' in bid:
         with open('Статистика.txt', 'w', encoding='UTF-8') as fil:
